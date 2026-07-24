@@ -6,13 +6,11 @@ const trip = "/assets/col-trip.jpg";
 const prewedding = "/assets/col-prewedding.jpg";
 const love = "/assets/col-love.jpg";
 
-export type Collection = "Honeymoon" | "Trip" | "Pre-Wedding" | "Love";
+export type Collection = "Couple T Shirt" | "Couple Hoodie";
 
 export const collections: { name: Collection; tagline: string; image: string }[] = [
-  { name: "Honeymoon", tagline: "For the first days of forever", image: honeymoon },
-  { name: "Trip", tagline: "Miles worn together", image: trip },
-  { name: "Pre-Wedding", tagline: "The build-up, in cotton", image: prewedding },
-  { name: "Love", tagline: "The eternal classic", image: love },
+  { name: "Couple T Shirt", tagline: "Matching tees, made for your story", image: love },
+  { name: "Couple Hoodie", tagline: "Cozy pair sets for every season", image: trip },
 ];
 
 export type Design = {
@@ -29,7 +27,7 @@ export const topDesigns: Design[] = [
     id: "monogram-essential",
     name: "Monogram Essential",
     subtitle: "Embroidered initials",
-    collection: "Love",
+    collection: "Couple T Shirt",
     image: design1,
     price: "₹1,499",
   },
@@ -37,7 +35,7 @@ export const topDesigns: Design[] = [
     id: "line-portrait",
     name: "Line Portrait",
     subtitle: "Custom couple sketch",
-    collection: "Pre-Wedding",
+    collection: "Couple Hoodie",
     image: design2,
     price: "₹1,799",
   },
@@ -45,7 +43,7 @@ export const topDesigns: Design[] = [
     id: "coordinates",
     name: "Coordinates",
     subtitle: "The place it began",
-    collection: "Trip",
+    collection: "Couple T Shirt",
     image: design3,
     price: "₹1,699",
   },
@@ -53,11 +51,11 @@ export const topDesigns: Design[] = [
 
 export const allDesigns: Design[] = [
   ...topDesigns,
-  { id: "sunset-honey", name: "Sunset Honey", subtitle: "Honeymoon capsule", collection: "Honeymoon", image: honeymoon, price: "₹1,899" },
-  { id: "route-66", name: "Route 66", subtitle: "Road trip series", collection: "Trip", image: trip, price: "₹1,699" },
-  { id: "vows", name: "Vows", subtitle: "Pre-wedding minimal", collection: "Pre-Wedding", image: prewedding, price: "₹1,799" },
-  { id: "always", name: "Always", subtitle: "Love classic", collection: "Love", image: love, price: "₹1,499" },
-  { id: "island", name: "Island Days", subtitle: "Honeymoon linen", collection: "Honeymoon", image: honeymoon, price: "₹1,999" },
+  { id: "sunset-honey", name: "Sunset Honey", subtitle: "Classic tee capsule", collection: "Couple T Shirt", image: honeymoon, price: "₹1,899" },
+  { id: "route-66", name: "Route 66", subtitle: "Street hoodie series", collection: "Couple Hoodie", image: trip, price: "₹1,699" },
+  { id: "vows", name: "Vows", subtitle: "Minimal couple hoodie", collection: "Couple Hoodie", image: prewedding, price: "₹1,799" },
+  { id: "always", name: "Always", subtitle: "Signature tee classic", collection: "Couple T Shirt", image: love, price: "₹1,499" },
+  { id: "island", name: "Island Days", subtitle: "Premium tee fit", collection: "Couple T Shirt", image: honeymoon, price: "₹1,999" },
 ];
 
 export const fabrics = [

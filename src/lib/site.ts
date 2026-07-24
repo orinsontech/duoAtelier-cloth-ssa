@@ -1,5 +1,5 @@
 // Update this WhatsApp number (with country code, no + or spaces) to receive orders.
-export const WHATSAPP_NUMBER = "917566634500";
+export const WHATSAPP_NUMBER = "919643986445";
 export const BRAND_NAME = "DuoAtelier";
 export const BRAND_TAGLINE = "Customized your Couple Tshirt and order on WhatsApp.";
 

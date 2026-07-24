@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BRAND_NAME, buildWhatsAppUrl } from "@/lib/site";
 
 export function SiteNav() {
@@ -6,8 +7,18 @@ export function SiteNav() {
     <nav className="sticky top-0 z-50 h-16 bg-ivory/80 backdrop-blur-md border-b border-border">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-10">
         <div className="flex items-center gap-8">
-          <Link href="/" className="font-serif text-2xl italic tracking-tight text-ink">
-            {BRAND_NAME}
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.jpeg"
+              alt={`${BRAND_NAME} logo`}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
+              priority
+            />
+            <span className="font-serif text-2xl italic tracking-tight text-ink">
+              {BRAND_NAME}
+            </span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.2em] text-ink/70">
             <Link href="/designs" className="hover:text-burgundy transition-colors">
@@ -54,7 +65,16 @@ export function SiteFooter() {
     <footer className="border-t border-border py-16 px-6 lg:px-10">
       <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
         <div>
-          <p className="font-serif text-2xl italic">{BRAND_NAME}</p>
+          <div className="flex items-center justify-center md:justify-start gap-3">
+            <Image
+              src="/logo.jpeg"
+              alt={`${BRAND_NAME} logo`}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
+            />
+            <p className="font-serif text-2xl italic">{BRAND_NAME}</p>
+          </div>
           <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
             Bespoke Couple Apparel
           </p>
