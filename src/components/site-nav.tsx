@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
-import { BRAND_NAME, buildWhatsAppUrl } from "@/lib/site";
+import Link from 'next/link';
+import Image from 'next/image';
+import { BRAND_NAME, buildWhatsAppUrl } from '@/lib/site';
 
 export function SiteNav() {
   return (
@@ -21,15 +21,30 @@ export function SiteNav() {
             </span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.2em] text-ink/70">
-            <Link href="/designs" className="hover:text-burgundy transition-colors">
+            <Link
+              href="/designs"
+              className="hover:text-burgundy transition-colors"
+            >
               Collections
             </Link>
-            <Link href="/#fabric" className="hover:text-burgundy transition-colors">Fabric</Link>
-            <Link href="/#process" className="hover:text-burgundy transition-colors">Process</Link>
+            <Link
+              href="/#fabric"
+              className="hover:text-burgundy transition-colors"
+            >
+              Fabric
+            </Link>
+            <Link
+              href="/#process"
+              className="hover:text-burgundy transition-colors"
+            >
+              Process
+            </Link>
           </div>
         </div>
         <a
-          href={buildWhatsAppUrl("Hi! I'd like to know more about your customised couple tshirts.")}
+          href={buildWhatsAppUrl(
+            "Hi! I'd like to know more about your customised couple tshirts.",
+          )}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center rounded-full border border-ink/15 px-4 py-2 text-[11px] uppercase tracking-[0.2em] font-medium transition-all hover:bg-ink hover:text-ivory active:scale-95"
@@ -80,7 +95,9 @@ export function SiteFooter() {
           </p>
         </div>
         <a
-          href={buildWhatsAppUrl("Hi! I'd like to place a couple tshirt order.")}
+          href={buildWhatsAppUrl(
+            "Hi! I'd like to place a couple tshirt order.",
+          )}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-xs uppercase tracking-[0.2em] text-ivory transition-transform hover:scale-105"
