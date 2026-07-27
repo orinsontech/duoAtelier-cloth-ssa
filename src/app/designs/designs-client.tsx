@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteNav, SiteFooter, StickyWhatsApp } from "@/components/site-nav";
 import { allDesigns, collections, type Collection } from "@/lib/designs";
+import { buildWhatsAppUrl } from "@/lib/site";
 
 export function DesignsPage({ initialCollection }: { initialCollection?: Collection }) {
   const [active, setActive] = useState<Collection | "All">(initialCollection ?? "All");
@@ -17,7 +18,7 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
         <span className="text-[10px] uppercase tracking-[0.35em] text-burgundy">The Archive</span>
         <h1 className="font-serif text-5xl md:text-6xl italic mt-4">Explore all the designs</h1>
         <p className="mt-4 text-sm text-ink/60 max-w-md mx-auto">
-          Every design can be customised. Pick your favourite, choose your fabric, and order on WhatsApp.
+          Pick your favourite design, customise it, or order on WhatsApp.
         </p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-2">
@@ -56,12 +57,23 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
                   <p className="text-[10px] uppercase tracking-[0.2em] text-ink/50">{d.collection}</p>
                   <p className="mt-1 text-sm text-burgundy font-medium">{d.price}</p>
                 </div>
-                <Link
-                  href={`/customize?design=${encodeURIComponent(d.id)}`}
-                  className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
-                >
-                  Customize your Tshirt
-                </Link>
+                {d.collection === "Our design" ? (
+                  <Link
+                    href={buildWhatsAppUrl(`Hi, I'd like to order the "${d.name}" design.`)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                  >
+                    Order on WhatsApp
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/customize?design=${encodeURIComponent(d.id)}`}
+                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                  >
+                    Customize your Tshirt
+                  </Link>
+                )}
               </div>
             </div>
           ))}

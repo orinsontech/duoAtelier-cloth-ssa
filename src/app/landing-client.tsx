@@ -199,7 +199,7 @@ export function Landing() {
               (03) From our Atelier
             </span>
             <h2 className="font-serif text-4xl md:text-5xl italic mt-3">
-              Top Customized Designs
+              Top Designs
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -224,12 +224,23 @@ export function Landing() {
                       {d.price}
                     </p>
                   </div>
-                  <Link
-                    href={`/customize?design=${encodeURIComponent(d.id)}`}
-                    className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
-                  >
-                    Customize your Tshirt
-                  </Link>
+                  {d.collection === "Our design" ? (
+                    <Link
+                      href={buildWhatsAppUrl(`Hi, I'd like to order the "${d.name}" design.`)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                    >
+                      Order on WhatsApp
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/customize?design=${encodeURIComponent(d.id)}`}
+                      className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                    >
+                      Customize your Tshirt
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}

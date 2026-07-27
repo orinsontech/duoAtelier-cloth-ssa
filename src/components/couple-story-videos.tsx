@@ -23,6 +23,14 @@ const stories = [
 export function CoupleStoryVideos() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const [mutedIndex, setMutedIndex] = useState<number | null>(null);
+
+  const toggleMute = (i: number) => {
+    const video = videoRefs.current[i];
+    if (!video) return;
+    video.muted = !video.muted;
+    setMutedIndex(video.muted ? i : null);
+  };
 
   const toggle = (i: number) => {
     const video = videoRefs.current[i];
@@ -78,6 +86,17 @@ export function CoupleStoryVideos() {
             <span className="grid place-items-center w-14 h-14 rounded-full bg-ivory/90 backdrop-blur text-burgundy text-lg shadow-md">
               {playingIndex === i ? '⏸' : '▶'}
             </span>
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleMute(i);
+            }}
+            aria-label={mutedIndex === i ? 'Unmute video' : 'Mute video'}
+            className="absolute bottom-3 right-3 grid place-items-center w-9 h-9 rounded-full bg-ivory/90 backdrop-blur text-burgundy text-sm shadow-md"
+          >
+            {mutedIndex === i ? '🔇' : '🔊'}
           </button>
         </div>
       ))}
