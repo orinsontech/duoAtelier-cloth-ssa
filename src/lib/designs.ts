@@ -6,7 +6,7 @@ const trip = '/assets/col-trip.jpg';
 const prewedding = '/assets/col-prewedding.jpg';
 const love = '/assets/col-love.jpg';
 
-export type Collection = 'Couple T Shirt' | 'Couple Hoodie';
+export type Collection = 'Couple T Shirt' | 'Couple Hoodie' | 'Our design';
 
 export const collections: {
   name: Collection;
@@ -22,6 +22,11 @@ export const collections: {
     name: 'Couple Hoodie',
     tagline: 'Cozy pair sets for every season',
     image: trip,
+  },
+  {
+    name: 'Our design',
+    tagline: 'Signature picks from the atelier',
+    image: prewedding,
   },
 ];
 
@@ -47,7 +52,7 @@ export const topDesigns: Design[] = [
     id: 'line-portrait',
     name: 'Line Portrait',
     subtitle: 'Custom couple sketch',
-    collection: 'Couple Hoodie',
+    collection: 'Our design',
     image: design2,
     price: '₹1,799',
   },
@@ -55,7 +60,7 @@ export const topDesigns: Design[] = [
     id: 'coordinates',
     name: 'Coordinates',
     subtitle: 'The place it began',
-    collection: 'Couple T Shirt',
+    collection: 'Our design',
     image: design3,
     price: '₹1,699',
   },
@@ -102,6 +107,86 @@ export const allDesigns: Design[] = [
     collection: 'Couple T Shirt',
     image: honeymoon,
     price: '₹1,999',
+  },
+  {
+    id: 'booked-confirmed',
+    name: 'Booked ✔️',
+    subtitle: '+ Booking Confirmed',
+    collection: 'Our design',
+    image: design1,
+    price: '₹1,599',
+  },
+  {
+    id: 'haan-bol-diya',
+    name: 'Haan Bol Diya',
+    subtitle: '+ Haan Bulwaya Gaya Tha',
+    collection: 'Our design',
+    image: design2,
+    price: '₹1,599',
+  },
+  {
+    id: 'add-to-cart-buy-now',
+    name: 'Add To Cart',
+    subtitle: '+ Buy Now',
+    collection: 'Our design',
+    image: design3,
+    price: '₹1,499',
+  },
+  {
+    id: 'zomato-swiggy',
+    name: 'Zomato',
+    subtitle: '+ Swiggy Bhi',
+    collection: 'Our design',
+    image: love,
+    price: '₹1,499',
+  },
+  {
+    id: 'wifi-password',
+    name: 'WiFi',
+    subtitle: '+ Password',
+    collection: 'Our design',
+    image: trip,
+    price: '₹1,599',
+  },
+  {
+    id: 'typing-seen',
+    name: 'Typing…',
+    subtitle: '+ Seen',
+    collection: 'Our design',
+    image: honeymoon,
+    price: '₹1,599',
+  },
+  {
+    id: 'ac-18-vs-26',
+    name: 'AC 18°',
+    subtitle: '+ AC 26° + Kambal',
+    collection: 'Our design',
+    image: prewedding,
+    price: '₹1,699',
+  },
+  {
+    id: 'handsome-choice',
+    name: 'Handsome',
+    subtitle: '+ Uski Choice Dekhlo',
+    collection: 'Our design',
+    image: design1,
+    price: '₹1,499',
+  },
+  {
+    id: 'better-half',
+    name: 'Half',
+    subtitle: '+ Better Half (Obviously)',
+    collection: 'Our design',
+    image: design2,
+    price: '₹1,599',
+  },
+  {
+    id: 'paise-ka-ped-maali',
+    name: 'Paise Ka Ped Nahi Hoon',
+    subtitle: '+ Maali',
+    collection: 'Our design',
+    image: design3,
+    price: '₹1,699',
   },
 ];
 

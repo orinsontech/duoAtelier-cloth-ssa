@@ -51,9 +51,8 @@ export function Landing() {
           The Bespoke Couple Atelier
         </span>
         <h1 className="animate-fade-up font-serif text-5xl md:text-7xl lg:text-[92px] leading-[0.95] text-balance max-w-5xl mx-auto">
-          Create Your <em className="italic">Customised</em>{' '}
-          <br className="hidden md:block" />
-          Couple Tshirt
+          Personalize it with your names, quotes, photos, or choose from our
+          exclusive collection.
         </h1>
         <p className="animate-fade-up mt-8 text-base md:text-lg text-ink/60 max-w-xl mx-auto text-pretty">
           Customized your Couple Tshirt and order on WhatsApp. Tailored in
@@ -71,7 +70,7 @@ export function Landing() {
             href="/designs"
             className="border border-ink/20 px-9 py-4 rounded-full text-[11px] uppercase tracking-[0.25em] font-medium hover:border-ink hover:bg-cream transition-colors"
           >
-            Explore all the designs
+            Explore our Designs
           </Link>
         </div>
 

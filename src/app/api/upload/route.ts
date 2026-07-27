@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     const cloudName = getRequiredEnv('CLOUDINARY_CLOUD_NAME');
     const apiKey = getRequiredEnv('CLOUDINARY_API_KEY');
     const apiSecret = getRequiredEnv('CLOUDINARY_API_SECRET');
-    const folder = process.env.CLOUDINARY_FOLDER?.trim() || 'willy-lilly';
+    const folder = process.env.CLOUDINARY_FOLDER?.trim() || 'willy-nilly';
     const timestamp = Math.floor(Date.now() / 1000).toString();
 
     const signatureBase = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;

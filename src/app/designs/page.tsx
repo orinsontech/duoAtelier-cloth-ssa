@@ -5,7 +5,7 @@ import type { Collection } from "@/lib/designs";
 export const metadata: Metadata = {
   title: "All Designs",
   description:
-    "Browse every Willy-Lilly customised couple tshirt design. Filter by collection and customize on WhatsApp.",
+    "Browse every Willy-Nilly customised couple tshirt design. Filter by collection and customize on WhatsApp.",
   openGraph: {
     title: "Explore all Couple Tshirt Designs",
     description: "Bespoke matching couple tshirts across Honeymoon, Trip, Pre-Wedding & Love collections.",
