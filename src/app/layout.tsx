@@ -19,14 +19,14 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "DuoAtelier — Customised Couple Tshirts, Order on WhatsApp",
-    template: "%s — DuoAtelier",
+    default: "Willy-Lilly — Customised Couple Tshirts, Order on WhatsApp",
+    template: "%s — Willy-Lilly",
   },
   description:
     "Design and order your bespoke matching couple tshirts. Honeymoon, Trip, Pre-Wedding & Love collections in 180–280 GSM premium cotton. Order on WhatsApp.",
-  authors: [{ name: "DuoAtelier" }],
+  authors: [{ name: "Willy-Lilly" }],
   openGraph: {
-    title: "DuoAtelier — Customised Couple Tshirts",
+    title: "Willy-Lilly — Customised Couple Tshirts",
     description: "Bespoke matching couple tshirts, ordered directly on WhatsApp.",
     type: "website",
   },

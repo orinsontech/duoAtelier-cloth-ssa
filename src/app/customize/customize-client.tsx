@@ -127,7 +127,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
     }
 
     const lines = [
-      '*New Couple Tshirt Order — DuoAtelier*',
+      '*New Couple Tshirt Order — Willy-Lilly*',
       '',
       `*Design:* ${preselected ? preselected.name : fileName ? `Custom upload — ${fileName}` : 'Custom upload'}`,
       preselected ? `*Collection:* ${preselected.collection}` : null,

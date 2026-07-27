@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
+import { CoupleStoryVideos } from '@/components/couple-story-videos';
 import { collections, topDesigns, fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl } from '@/lib/site';
 
@@ -248,59 +249,7 @@ export function Landing() {
               Stories from our Couples
             </h2>
           </div>
-          <div className="flex gap-6 overflow-x-auto pb-6 snap-x no-scrollbar">
-            {[
-              {
-                img: '/assets/testi-1.jpg',
-                name: 'Aanya & Rohan',
-                quote:
-                  'The 280 GSM feel is unreal — like nothing off the shelf.',
-              },
-              {
-                img: '/assets/testi-2.jpg',
-                name: 'Sara & Kabir',
-                quote: 'WhatsApp order was seamless. Delivered in 5 days.',
-              },
-              {
-                img: '/assets/testi-3.jpg',
-                name: 'Meera & Arjun',
-                quote: 'Our honeymoon shoot looked like a magazine editorial.',
-              },
-              {
-                img: '/assets/testi-1.jpg',
-                name: 'Isha & Dev',
-                quote: 'Personalized right down to our anniversary date.',
-              },
-            ].map((t, i) => (
-              <figure
-                key={i}
-                className="min-w-[280px] md:min-w-[320px] snap-center"
-              >
-                <div className="relative aspect-[9/16] rounded-2xl overflow-hidden ring-1 ring-black/5">
-                  <Image
-                    src={t.img}
-                    alt={t.name}
-                    fill
-                    sizes="320px"
-                    className="object-cover"
-                  />
-                  <button className="absolute inset-0 grid place-items-center bg-ink/10 hover:bg-ink/0 transition-colors">
-                    <span className="grid place-items-center w-14 h-14 rounded-full bg-ivory/90 backdrop-blur text-burgundy text-lg">
-                      ▶
-                    </span>
-                  </button>
-                </div>
-                <figcaption className="mt-4 px-1">
-                  <p className="font-serif italic text-lg text-pretty">
-                    &quot;{t.quote}&quot;
-                  </p>
-                  <p className="text-[10px] uppercase tracking-[0.25em] text-ink/50 mt-2">
-                    {t.name}
-                  </p>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
+          <CoupleStoryVideos />
         </div>
       </section>
 

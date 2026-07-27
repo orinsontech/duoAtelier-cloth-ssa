@@ -78,35 +78,54 @@ export function StickyWhatsApp() {
 export function SiteFooter() {
   return (
     <footer className="border-t border-border py-16 px-6 lg:px-10">
-      <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-        <div>
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <Image
-              src="/logo.jpeg"
-              alt={`${BRAND_NAME} logo`}
-              width={40}
-              height={40}
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
-            />
-            <p className="font-serif text-2xl italic">{BRAND_NAME}</p>
+      <div className="mx-auto max-w-7xl flex flex-col gap-10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
+          <div>
+            <div className="flex items-center justify-center md:justify-start gap-3">
+              <Image
+                src="/logo.jpeg"
+                alt={`${BRAND_NAME} logo`}
+                width={40}
+                height={40}
+                className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
+              />
+              <p className="font-serif text-2xl italic">{BRAND_NAME}</p>
+            </div>
+            <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
+              Bespoke Couple Apparel
+            </p>
           </div>
-          <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
-            Bespoke Couple Apparel
+          <a
+            href={buildWhatsAppUrl(
+              "Hi! I'd like to place a couple tshirt order.",
+            )}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-xs uppercase tracking-[0.2em] text-ivory transition-transform hover:scale-105"
+          >
+            Place your order on WhatsApp
+          </a>
+        </div>
+
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-border pt-8 text-center md:text-left">
+          <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] uppercase tracking-[0.2em] text-ink/50">
+            <Link href="/contact" className="hover:text-burgundy transition-colors">
+              Contact Us
+            </Link>
+            <Link href="/privacy-policy" className="hover:text-burgundy transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-of-service" className="hover:text-burgundy transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/refund-policy" className="hover:text-burgundy transition-colors">
+              Refund Policy
+            </Link>
+          </nav>
+          <p className="text-[10px] uppercase tracking-[0.25em] text-ink/40">
+            © {new Date().getFullYear()} {BRAND_NAME}
           </p>
         </div>
-        <a
-          href={buildWhatsAppUrl(
-            "Hi! I'd like to place a couple tshirt order.",
-          )}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-ink px-8 py-3 text-xs uppercase tracking-[0.2em] text-ivory transition-transform hover:scale-105"
-        >
-          Place your order on WhatsApp
-        </a>
-        <p className="text-[10px] uppercase tracking-[0.25em] text-ink/40">
-          © {new Date().getFullYear()} {BRAND_NAME}
-        </p>
       </div>
     </footer>
   );
