@@ -6,6 +6,14 @@ const trip = '/assets/col-trip.jpg';
 const prewedding = '/assets/col-prewedding.jpg';
 const love = '/assets/col-love.jpg';
 
+const soldOutProudOwner = '/assets/our-design/sold-out-proud-owner.jpg';
+const theekHaiKuchTheekNahi = '/assets/our-design/theek-hai-kuch-theek-nahi.jpg';
+const heroDirector = '/assets/our-design/hero-director.jpg';
+const oneManShowProducer = '/assets/our-design/one-man-show-producer.jpg';
+const limitedEditionOwner = '/assets/our-design/limited-edition-owner.jpg';
+const bigdaHuaBigaadneWali = '/assets/our-design/bigda-hua-bigaadne-wali.jpg';
+const tripSponsorPlanner = '/assets/our-design/trip-sponsor-planner.jpg';
+
 export type Collection = 'Couple T Shirt' | 'Couple Hoodie' | 'Our design';
 
 export const collections: {
@@ -49,20 +57,20 @@ export const topDesigns: Design[] = [
     price: '₹1,499',
   },
   {
-    id: 'line-portrait',
-    name: 'Line Portrait',
-    subtitle: 'Custom couple sketch',
+    id: 'sold-out-proud-owner',
+    name: 'Sold Out',
+    subtitle: '+ Proud Owner',
     collection: 'Our design',
-    image: design2,
-    price: '₹1,799',
+    image: soldOutProudOwner,
+    price: '₹1,499',
   },
   {
-    id: 'coordinates',
-    name: 'Coordinates',
-    subtitle: 'The place it began',
+    id: 'hero-director',
+    name: 'Hero',
+    subtitle: '+ Director',
     collection: 'Our design',
-    image: design3,
-    price: '₹1,699',
+    image: heroDirector,
+    price: '₹1,499',
   },
 ];
 
@@ -109,84 +117,44 @@ export const allDesigns: Design[] = [
     price: '₹1,999',
   },
   {
-    id: 'booked-confirmed',
-    name: 'Booked ✔️',
-    subtitle: '+ Booking Confirmed',
+    id: 'theek-hai-kuch-theek-nahi',
+    name: '"Theek Hai"',
+    subtitle: '+ Kuch Theek Nahi Hai',
     collection: 'Our design',
-    image: design1,
+    image: theekHaiKuchTheekNahi,
     price: '₹1,599',
   },
   {
-    id: 'haan-bol-diya',
-    name: 'Haan Bol Diya',
-    subtitle: '+ Haan Bulwaya Gaya Tha',
+    id: 'one-man-show-producer',
+    name: 'One Man Show',
+    subtitle: '+ Show Ki Producer',
     collection: 'Our design',
-    image: design2,
+    image: oneManShowProducer,
     price: '₹1,599',
   },
   {
-    id: 'add-to-cart-buy-now',
-    name: 'Add To Cart',
-    subtitle: '+ Buy Now',
+    id: 'limited-edition-owner',
+    name: 'Limited Edition',
+    subtitle: '+ Owner Of Limited Edition',
     collection: 'Our design',
-    image: design3,
-    price: '₹1,499',
-  },
-  {
-    id: 'zomato-swiggy',
-    name: 'Zomato',
-    subtitle: '+ Swiggy Bhi',
-    collection: 'Our design',
-    image: love,
-    price: '₹1,499',
-  },
-  {
-    id: 'wifi-password',
-    name: 'WiFi',
-    subtitle: '+ Password',
-    collection: 'Our design',
-    image: trip,
-    price: '₹1,599',
-  },
-  {
-    id: 'typing-seen',
-    name: 'Typing…',
-    subtitle: '+ Seen',
-    collection: 'Our design',
-    image: honeymoon,
-    price: '₹1,599',
-  },
-  {
-    id: 'ac-18-vs-26',
-    name: 'AC 18°',
-    subtitle: '+ AC 26° + Kambal',
-    collection: 'Our design',
-    image: prewedding,
+    image: limitedEditionOwner,
     price: '₹1,699',
   },
   {
-    id: 'handsome-choice',
-    name: 'Handsome',
-    subtitle: '+ Uski Choice Dekhlo',
+    id: 'bigda-hua-bigaadne-wali',
+    name: 'Bigda Hua',
+    subtitle: '+ Bigaadne Wali',
     collection: 'Our design',
-    image: design1,
+    image: bigdaHuaBigaadneWali,
     price: '₹1,499',
   },
   {
-    id: 'better-half',
-    name: 'Half',
-    subtitle: '+ Better Half (Obviously)',
+    id: 'trip-sponsor-planner',
+    name: 'Trip Sponsor',
+    subtitle: '+ Trip Planner',
     collection: 'Our design',
-    image: design2,
+    image: tripSponsorPlanner,
     price: '₹1,599',
-  },
-  {
-    id: 'paise-ka-ped-maali',
-    name: 'Paise Ka Ped Nahi Hoon',
-    subtitle: '+ Maali',
-    collection: 'Our design',
-    image: design3,
-    price: '₹1,699',
   },
 ];
 
