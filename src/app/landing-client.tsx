@@ -1,7 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
@@ -10,40 +8,9 @@ import { collections, topDesigns, fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl } from '@/lib/site';
 
 export function Landing() {
-  const router = useRouter();
-  const fileRef = useRef<HTMLInputElement | null>(null);
-
-  const onUploadPick = (file: File) => {
-    // Stash a lightweight token; the customize page reads it and asks
-    // the user to re-select if the tab was fully closed.
-    try {
-      sessionStorage.setItem('da_uploaded_name', file.name);
-      // Create an object URL so we can show a preview on the next page.
-      // We'll store the blob URL (string) in sessionStorage and attempt
-      // to reconstruct the File there for upload. This keeps the UX
-      // smooth during client navigation while avoiding exposing the
-      // binary in the URL.
-      const blobUrl = URL.createObjectURL(file);
-      sessionStorage.setItem('da_uploaded_preview', blobUrl);
-    } catch {}
-    router.push('/customize?source=upload');
-  };
-
   return (
     <div className="min-h-screen bg-ivory text-ink font-sans">
       <SiteNav />
-
-      {/* Hidden file input */}
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          if (f) onUploadPick(f);
-        }}
-      />
 
       {/* HERO */}
       <header className="pt-16 pb-16 px-6 lg:px-10 text-center bg-gradient-to-b from-cream via-ivory to-ivory">
@@ -62,14 +29,14 @@ export function Landing() {
         </p>
 
         <div className="animate-fade-up mt-10 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <button
-            onClick={() => fileRef.current?.click()}
+          <Link
+            href="/designs"
             className="bg-burgundy text-ivory px-9 py-4 rounded-full text-[11px] uppercase tracking-[0.25em] font-medium hover:bg-burgundy-deep transition-colors"
           >
             Upload your design
-          </button>
+          </Link>
           <Link
-            href="/designs"
+            href="/designs?collection=Our%20design"
             className="border border-ink/20 px-9 py-4 rounded-full text-[11px] uppercase tracking-[0.25em] font-medium hover:border-ink hover:bg-cream transition-colors"
           >
             Explore our Designs
