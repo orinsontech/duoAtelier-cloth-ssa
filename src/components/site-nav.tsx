@@ -4,19 +4,19 @@ import { BRAND_NAME, buildWhatsAppUrl } from '@/lib/site';
 
 export function SiteNav() {
   return (
-    <nav className="sticky top-0 z-50 h-16 bg-ivory/80 backdrop-blur-md border-b border-border">
-      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-10">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-3">
+    <nav className="sticky top-0 z-50 bg-ivory/80 backdrop-blur-md border-b border-border">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
+        <div className="flex items-center gap-8 min-w-0">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Image
               src="/logo.jpeg"
               alt={`${BRAND_NAME} logo`}
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
+              className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
               priority
             />
-            <span className="font-serif text-2xl italic tracking-tight text-ink">
+            <span className="font-serif text-lg italic tracking-tight text-ink whitespace-nowrap sm:text-2xl">
               {BRAND_NAME}
             </span>
           </Link>
@@ -47,7 +47,7 @@ export function SiteNav() {
           )}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center rounded-full border border-ink/15 px-4 py-2 text-[11px] uppercase tracking-[0.2em] font-medium transition-all hover:bg-ink hover:text-ivory active:scale-95"
+          className="inline-flex shrink-0 items-center whitespace-nowrap rounded-full border border-ink/15 px-2.5 py-1.5 text-[9px] uppercase tracking-[0.06em] font-medium transition-all hover:bg-ink hover:text-ivory active:scale-95 sm:px-4 sm:py-2 sm:text-[11px] sm:tracking-[0.2em]"
         >
           Order on WhatsApp
         </a>

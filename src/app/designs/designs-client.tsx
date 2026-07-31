@@ -4,12 +4,20 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteNav, SiteFooter, StickyWhatsApp } from "@/components/site-nav";
-import { allDesigns, collections, type Collection } from "@/lib/designs";
-import { buildWhatsAppUrl } from "@/lib/site";
+import { allDesigns, type Collection } from "@/lib/designs";
+
+const TABS = ["Customize Designs", "Our Designs"] as const;
+type Tab = (typeof TABS)[number];
+
+function tabForCollection(collection?: Collection): Tab {
+  return collection === "Our design" ? "Our Designs" : "Customize Designs";
+}
 
 export function DesignsPage({ initialCollection }: { initialCollection?: Collection }) {
-  const [active, setActive] = useState<Collection | "All">(initialCollection ?? "All");
-  const filtered = active === "All" ? allDesigns : allDesigns.filter((d) => d.collection === active);
+  const [active, setActive] = useState<Tab>(tabForCollection(initialCollection));
+  const filtered = allDesigns.filter((d) =>
+    active === "Our Designs" ? d.collection === "Our design" : d.collection !== "Our design",
+  );
 
   return (
     <div className="min-h-screen bg-ivory text-ink">
@@ -22,17 +30,17 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
         </p>
 
         <div className="mt-10 flex flex-wrap justify-center gap-2">
-          {(["All", ...collections.map((c) => c.name)] as (Collection | "All")[]).map((c) => (
+          {TABS.map((t) => (
             <button
-              key={c}
-              onClick={() => setActive(c)}
+              key={t}
+              onClick={() => setActive(t)}
               className={`px-5 py-2 rounded-full text-[11px] uppercase tracking-[0.2em] border transition-colors ${
-                active === c
+                active === t
                   ? "bg-burgundy text-ivory border-burgundy"
                   : "border-ink/15 text-ink/70 hover:border-ink"
               }`}
             >
-              {c}
+              {t}
             </button>
           ))}
         </div>
@@ -59,9 +67,7 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
                 </div>
                 {d.collection === "Our design" ? (
                   <Link
-                    href={buildWhatsAppUrl(`Hi, I'd like to order the "${d.name}" design.`)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={`/customize?design=${encodeURIComponent(d.id)}`}
                     className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
                   >
                     Order on WhatsApp

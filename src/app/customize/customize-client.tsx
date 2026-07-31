@@ -25,6 +25,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
     () => allDesigns.find((d) => d.id === designId) ?? null,
     [designId],
   );
+  const isFixedDesign = preselected?.collection === 'Our design';
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(
@@ -85,6 +86,24 @@ export function CustomizePage({ designId }: { designId?: string }) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (isFixedDesign) {
+      const imageUrl = preselected ? `${SITE_URL}${preselected.image}` : null;
+      const lines = [
+        '*New Couple Tshirt Order — Willy-Nilly*',
+        '',
+        `*Design:* ${preselected?.name}`,
+        `*Collection:* ${preselected?.collection}`,
+        '',
+        "I'll share my sizing and delivery details in this chat.",
+        imageUrl ? `*Reference photo:* ${imageUrl}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n');
+      window.open(buildWhatsAppUrl(lines), '_blank');
+      return;
+    }
+
     const form = new FormData(e.currentTarget);
     const data = {
       name: String(form.get('name') ?? ''),
@@ -159,11 +178,12 @@ export function CustomizePage({ designId }: { designId?: string }) {
           Your Bespoke Order
         </span>
         <h1 className="font-serif text-4xl md:text-6xl italic mt-3">
-          Customize your Couple Tshirt
+          {isFixedDesign ? 'Order your Couple Tshirt' : 'Customize your Couple Tshirt'}
         </h1>
         <p className="mt-4 text-sm text-ink/60 max-w-lg mx-auto">
-          Upload a reference, choose your fabric, and share your details. Your
-          order goes to us on WhatsApp.
+          {isFixedDesign
+            ? 'Tap below to place your order on WhatsApp.'
+            : 'Upload a reference, choose your fabric, and share your details. Your order goes to us on WhatsApp.'}
         </p>
       </header>
 
@@ -173,7 +193,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
       >
         {/* STEP 1: Reference */}
         <section>
-          <StepLabel n="01" title="Your reference" />
+          {!isFixedDesign && <StepLabel n="01" title="Your reference" />}
           <div className="mt-6 grid md:grid-cols-[280px_1fr] gap-8 items-start">
             <div className="relative aspect-[4/5] rounded-md ring-1 ring-black/5 bg-cream overflow-hidden grid place-items-center">
               {preview ? (
@@ -193,38 +213,46 @@ export function CustomizePage({ designId }: { designId?: string }) {
             </div>
             <div>
               <p className="text-sm text-ink/70 max-w-md">
-                {preselected
-                  ? `You've selected "${preselected.name}" from our catalog. You can also upload your own reference below.`
-                  : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
+                {isFixedDesign
+                  ? `You've selected "${preselected?.name}" — a signature print from our atelier. This design isn't customizable; tap below to place your order on WhatsApp.`
+                  : preselected
+                    ? `You've selected "${preselected.name}" from our catalog. You can also upload your own reference below.`
+                    : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
               </p>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) onFile(f);
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="mt-6 inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-[11px] uppercase tracking-[0.25em] hover:border-ink hover:bg-cream"
-              >
-                {file ? 'Replace image' : 'Upload your design'}
-              </button>
-              {fileName && (
-                <p className="mt-3 text-xs text-ink/50">Selected: {fileName}</p>
-              )}
-              {uploadError && (
-                <p className="mt-2 text-xs text-destructive">{uploadError}</p>
+              {!isFixedDesign && (
+                <>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) onFile(f);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="mt-6 inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-[11px] uppercase tracking-[0.25em] hover:border-ink hover:bg-cream"
+                  >
+                    {file ? 'Replace image' : 'Upload your design'}
+                  </button>
+                  {fileName && (
+                    <p className="mt-3 text-xs text-ink/50">Selected: {fileName}</p>
+                  )}
+                  {uploadError && (
+                    <p className="mt-2 text-xs text-destructive">{uploadError}</p>
+                  )}
+                </>
               )}
             </div>
           </div>
         </section>
 
         {/* STEP 2: Fabric */}
+        {!isFixedDesign && (
+        <>
         <section>
           <StepLabel n="02" title="Select fabric weight" />
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -301,12 +329,15 @@ export function CustomizePage({ designId }: { designId?: string }) {
             </div>
           </div>
         </section>
+        </>
+        )}
 
         {/* CTA */}
         <section className="border-t border-border pt-12 text-center">
           <p className="text-sm text-ink/60 max-w-md mx-auto">
-            Tap below to open WhatsApp with your order — and reference photo
-            link — pre-filled.
+            {isFixedDesign
+              ? 'Tap below to open WhatsApp and place your order for this design.'
+              : 'Tap below to open WhatsApp with your order — and reference photo link — pre-filled.'}
           </p>
           <button
             type="submit"

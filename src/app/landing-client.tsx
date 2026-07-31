@@ -46,13 +46,15 @@ export function Landing() {
       />
 
       {/* HERO */}
-      <header className="pt-16 pb-16 px-6 lg:px-10 text-center">
+      <header className="pt-16 pb-16 px-6 lg:px-10 text-center bg-gradient-to-b from-cream via-ivory to-ivory">
         <span className="animate-fade-up inline-block text-[10px] uppercase tracking-[0.35em] text-burgundy mb-6">
           The Bespoke Couple Atelier
         </span>
         <h1 className="animate-fade-up font-serif text-5xl md:text-7xl lg:text-[92px] leading-[0.95] text-balance max-w-5xl mx-auto">
-          Personalize it with your names, quotes, photos, or choose from our
-          exclusive collection.
+          Personalize it with your names, quotes, photos,{' '}
+          <span className="italic text-burgundy">
+            or choose from our exclusive collection.
+          </span>
         </h1>
         <p className="animate-fade-up mt-8 text-base md:text-lg text-ink/60 max-w-xl mx-auto text-pretty">
           Customized your Couple Tshirt and order on WhatsApp. Tailored in
@@ -226,9 +228,7 @@ export function Landing() {
                   </div>
                   {d.collection === "Our design" ? (
                     <Link
-                      href={buildWhatsAppUrl(`Hi, I'd like to order the "${d.name}" design.`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`/customize?design=${encodeURIComponent(d.id)}`}
                       className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
                     >
                       Order on WhatsApp
