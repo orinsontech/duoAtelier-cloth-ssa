@@ -34,10 +34,10 @@ export function SiteNav() {
               Fabric
             </Link>
             <Link
-              href="/#process"
+              href="/#how-to-order"
               className="hover:text-burgundy transition-colors"
             >
-              Process
+              How to Order
             </Link>
           </div>
         </div>

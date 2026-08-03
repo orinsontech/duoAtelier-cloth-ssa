@@ -17,13 +17,64 @@ export function Landing() {
         <span className="animate-fade-up inline-block text-[10px] uppercase tracking-[0.35em] text-burgundy mb-6">
           The Bespoke Couple Atelier
         </span>
-        <h1 className="animate-fade-up font-serif text-5xl md:text-7xl lg:text-[92px] leading-[0.95] text-balance max-w-5xl mx-auto">
-          Personalize it with your names, quotes, photos,{' '}
-          <span className="italic text-burgundy">
-            or choose from our exclusive collection.
-          </span>
-        </h1>
-        <p className="animate-fade-up mt-8 text-base md:text-lg text-ink/60 max-w-xl mx-auto text-pretty">
+        <div className="animate-fade-up grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-14 md:gap-16 items-start max-w-5xl mx-auto text-center">
+          <div>
+            <h1 className="font-serif text-4xl md:text-5xl leading-tight uppercase">
+              Personalize It
+              <br />
+              <span className="italic text-burgundy text-5xl md:text-6xl">
+                Your Way
+              </span>
+            </h1>
+            <div className="flex items-center justify-center gap-3 mt-5 mb-7">
+              <span className="h-px w-16 bg-ink/20" />
+              <span className="text-burgundy text-sm">♥</span>
+              <span className="h-px w-16 bg-ink/20" />
+            </div>
+            <ul className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-ink/70 max-w-xs mx-auto">
+              <li className="pb-3 mb-3 border-b border-ink/10">
+                Add your names
+              </li>
+              <li className="pb-3 mb-3 border-b border-ink/10">
+                Add your favorite quote
+              </li>
+              <li>Add your photos</li>
+            </ul>
+          </div>
+
+          <div className="hidden md:flex flex-col items-center gap-4 text-burgundy font-serif text-2xl tracking-[0.15em] pt-10">
+            <span className="h-28 w-px bg-burgundy/30" />
+            OR
+            <span className="h-28 w-px bg-burgundy/30" />
+          </div>
+
+          <div>
+            <h2 className="font-serif text-4xl md:text-5xl leading-tight uppercase">
+              Choose From Our
+              <br />
+              <span className="italic text-burgundy text-5xl md:text-6xl">
+                Exclusive Collection
+              </span>
+            </h2>
+            <div className="flex items-center justify-center gap-3 mt-5 mb-7">
+              <span className="h-px w-16 bg-ink/20" />
+              <span className="text-burgundy text-xs rotate-45 inline-block">
+                ◆
+              </span>
+              <span className="h-px w-16 bg-ink/20" />
+            </div>
+            <ul className="text-[11px] md:text-xs uppercase tracking-[0.2em] text-ink/70 max-w-xs mx-auto">
+              <li className="pb-3 mb-3 border-b border-ink/10">
+                Premium ready-made designs
+              </li>
+              <li className="pb-3 mb-3 border-b border-ink/10">
+                Artist-curated collection
+              </li>
+              <li>Timeless & romantic themes</li>
+            </ul>
+          </div>
+        </div>
+        <p className="animate-fade-up mt-10 text-base md:text-lg text-ink/60 max-w-xl mx-auto text-pretty">
           Customized your Couple Tshirt and order on WhatsApp. Tailored in
           premium cotton for the moments that matter most.
         </p>
@@ -174,7 +225,10 @@ export function Landing() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {topDesigns.map((d) => (
               <div key={d.id} className="group">
-                <div className="relative aspect-[4/5] overflow-hidden bg-cream ring-1 ring-black/5 rounded-md">
+                <Link
+                  href={`/customize?design=${encodeURIComponent(d.id)}`}
+                  className="relative aspect-[4/5] overflow-hidden bg-cream ring-1 ring-black/5 rounded-md block"
+                >
                   <Image
                     src={d.image}
                     alt={d.name}
@@ -182,33 +236,22 @@ export function Landing() {
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
                   />
-                </div>
-                <div className="mt-5 flex items-start justify-between gap-4">
-                  <div>
-                    <h4 className="font-serif text-xl">{d.name}</h4>
-                    <p className="text-[11px] uppercase tracking-[0.2em] text-ink/50 mt-1">
-                      {d.subtitle}
-                    </p>
-                    <p className="mt-2 text-sm text-burgundy font-medium">
-                      {d.price}
-                    </p>
-                  </div>
-                  {d.collection === "Our design" ? (
-                    <Link
-                      href={`/customize?design=${encodeURIComponent(d.id)}`}
-                      className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
-                    >
-                      Order on WhatsApp
-                    </Link>
-                  ) : (
-                    <Link
-                      href={`/customize?design=${encodeURIComponent(d.id)}`}
-                      className="text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
-                    >
-                      Customize your Tshirt
-                    </Link>
-                  )}
-                </div>
+                </Link>
+                <h4 className="mt-5 font-serif text-xl whitespace-nowrap">
+                  {d.name}
+                </h4>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-ink/50 mt-1">
+                  {d.subtitle}
+                </p>
+                <p className="mt-2 text-sm text-burgundy font-medium">
+                  {d.price}
+                </p>
+                <Link
+                  href={`/customize?design=${encodeURIComponent(d.id)}`}
+                  className="mt-3 inline-block text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                >
+                  Buy Now
+                </Link>
               </div>
             ))}
           </div>
@@ -230,15 +273,15 @@ export function Landing() {
         </div>
       </section>
 
-      {/* PROCESS */}
-      <section id="process" className="py-28">
+      {/* HOW TO ORDER */}
+      <section id="how-to-order" className="py-28">
         <div className="max-w-5xl mx-auto px-6 lg:px-10">
           <div className="text-center mb-16">
             <span className="text-[10px] uppercase tracking-[0.3em] text-burgundy">
               (05) The Ritual
             </span>
             <h2 className="font-serif text-4xl md:text-5xl italic mt-3">
-              How it works
+              Process
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
