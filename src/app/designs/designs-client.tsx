@@ -9,14 +9,22 @@ import { allDesigns, type Collection } from "@/lib/designs";
 const TABS = ["Customize Designs", "Our Designs"] as const;
 type Tab = (typeof TABS)[number];
 
+const CUSTOMIZE_SUB_TABS = ["Couple T Shirt", "Couple Hoodie"] as const;
+type CustomizeSubTab = (typeof CUSTOMIZE_SUB_TABS)[number];
+
 function tabForCollection(collection?: Collection): Tab {
   return collection === "Our design" ? "Our Designs" : "Customize Designs";
 }
 
+function subTabForCollection(collection?: Collection): CustomizeSubTab {
+  return collection === "Couple Hoodie" ? "Couple Hoodie" : "Couple T Shirt";
+}
+
 export function DesignsPage({ initialCollection }: { initialCollection?: Collection }) {
   const [active, setActive] = useState<Tab>(tabForCollection(initialCollection));
+  const [subTab, setSubTab] = useState<CustomizeSubTab>(subTabForCollection(initialCollection));
   const filtered = allDesigns.filter((d) =>
-    active === "Our Designs" ? d.collection === "Our design" : d.collection !== "Our design",
+    active === "Our Designs" ? d.collection === "Our design" : d.collection === subTab,
   );
 
   return (
@@ -44,6 +52,24 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
             </button>
           ))}
         </div>
+
+        {active === "Customize Designs" && (
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {CUSTOMIZE_SUB_TABS.map((t) => (
+              <button
+                key={t}
+                onClick={() => setSubTab(t)}
+                className={`px-5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.15em] border transition-colors ${
+                  subTab === t
+                    ? "bg-ink text-ivory border-ink"
+                    : "border-ink/15 text-ink/60 hover:border-ink"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
 
       <section className="py-16 px-6 lg:px-10">
@@ -65,7 +91,7 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
               <p className="mt-1 text-sm text-burgundy font-medium">{d.price}</p>
               <Link
                 href={`/customize?design=${encodeURIComponent(d.id)}`}
-                className="mt-2 inline-block text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                className="mt-3 inline-flex items-center justify-center rounded-full bg-burgundy px-4 py-2 text-center text-[10px] uppercase tracking-[0.2em] font-semibold text-ivory transition-colors hover:bg-burgundy-deep"
               >
                 Buy Now - {d.collection === "Our design" ? "Order on WhatsApp" : "Customize your Tshirt"}
               </Link>

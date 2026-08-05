@@ -248,7 +248,7 @@ export function Landing() {
                 </p>
                 <Link
                   href={`/customize?design=${encodeURIComponent(d.id)}`}
-                  className="mt-3 inline-block text-[10px] uppercase tracking-[0.2em] font-semibold text-burgundy border-b border-burgundy/60 pb-0.5 hover:text-burgundy-deep whitespace-nowrap"
+                  className="mt-3 inline-flex items-center justify-center rounded-full bg-burgundy px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-ivory transition-colors hover:bg-burgundy-deep whitespace-nowrap"
                 >
                   Buy Now
                 </Link>

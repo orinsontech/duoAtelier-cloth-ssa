@@ -7,18 +7,15 @@ export function SiteNav() {
     <nav className="sticky top-0 z-50 bg-ivory/80 backdrop-blur-md border-b border-border">
       <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
         <div className="flex items-center gap-8 min-w-0">
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <Link href="/" className="flex items-center min-w-0">
             <Image
               src="/logo.jpeg"
               alt={`${BRAND_NAME} logo`}
-              width={40}
-              height={40}
-              className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-black/5 sm:h-10 sm:w-10"
+              width={660}
+              height={146}
+              className="h-7 w-auto shrink-0 sm:h-8"
               priority
             />
-            <span className="font-serif text-lg italic tracking-tight text-ink whitespace-nowrap sm:text-2xl">
-              {BRAND_NAME}
-            </span>
           </Link>
           <div className="hidden md:flex items-center gap-6 text-[11px] uppercase tracking-[0.2em] text-ink/70">
             <Link
@@ -81,15 +78,14 @@ export function SiteFooter() {
       <div className="mx-auto max-w-7xl flex flex-col gap-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
           <div>
-            <div className="flex items-center justify-center md:justify-start gap-3">
+            <div className="flex items-center justify-center md:justify-start">
               <Image
                 src="/logo.jpeg"
                 alt={`${BRAND_NAME} logo`}
-                width={40}
-                height={40}
-                className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
+                width={660}
+                height={146}
+                className="h-9 w-auto"
               />
-              <p className="font-serif text-2xl italic">{BRAND_NAME}</p>
             </div>
             <p className="mt-2 text-[11px] uppercase tracking-[0.25em] text-ink/40">
               Bespoke Couple Apparel
