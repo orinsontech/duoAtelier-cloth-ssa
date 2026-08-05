@@ -6,13 +6,15 @@ const trip = '/assets/col-trip.jpg';
 const prewedding = '/assets/col-prewedding.jpg';
 const love = '/assets/col-love.jpg';
 
-const soldOutProudOwner = '/assets/our-design/sold-out-proud-owner.jpg';
-const theekHaiKuchTheekNahi = '/assets/our-design/theek-hai-kuch-theek-nahi.jpg';
-const heroDirector = '/assets/our-design/hero-director.jpg';
-const oneManShowProducer = '/assets/our-design/one-man-show-producer.jpg';
-const limitedEditionOwner = '/assets/our-design/limited-edition-owner.jpg';
-const bigdaHuaBigaadneWali = '/assets/our-design/bigda-hua-bigaadne-wali.jpg';
-const tripSponsorPlanner = '/assets/our-design/trip-sponsor-planner.jpg';
+const soldOutProudOwnerWhite = '/assets/our-design/sold-out-proud-owner-white.jpg';
+const soldOutProudOwnerBlack = '/assets/our-design/sold-out-proud-owner-black.jpg';
+const heroDirectorWhite = '/assets/our-design/hero-director-white.jpg';
+const heroDirectorBlack = '/assets/our-design/hero-director-black.jpg';
+const limitedEditionOwnerWhite = '/assets/our-design/limited-edition-owner-white.jpg';
+const limitedEditionOwnerBlack = '/assets/our-design/limited-edition-owner-black.jpg';
+const bookedBookingConfirmedWhite = '/assets/our-design/booked-booking-confirmed-white.jpg';
+const bookedBookingConfirmedBlack = '/assets/our-design/booked-booking-confirmed-black.jpg';
+const hoodie2 = '/assets/hoodie-2.jpg';
 
 export type Collection = 'Couple T Shirt' | 'Couple Hoodie' | 'Our design';
 
@@ -44,6 +46,7 @@ export type Design = {
   subtitle: string;
   collection: Collection;
   image: string;
+  images?: string[];
   price: string;
 };
 
@@ -61,7 +64,8 @@ export const topDesigns: Design[] = [
     name: 'Sold Out',
     subtitle: '+ Proud Owner',
     collection: 'Our design',
-    image: soldOutProudOwner,
+    image: soldOutProudOwnerWhite,
+    images: [soldOutProudOwnerWhite, soldOutProudOwnerBlack],
     price: '₹1,499',
   },
   {
@@ -69,21 +73,14 @@ export const topDesigns: Design[] = [
     name: 'Hero',
     subtitle: '+ Director',
     collection: 'Our design',
-    image: heroDirector,
+    image: heroDirectorWhite,
+    images: [heroDirectorWhite, heroDirectorBlack],
     price: '₹1,499',
   },
 ];
 
 export const allDesigns: Design[] = [
   ...topDesigns,
-  {
-    id: 'sunset-honey',
-    name: 'Sunset Honey',
-    subtitle: 'Classic tee capsule',
-    collection: 'Couple T Shirt',
-    image: honeymoon,
-    price: '₹1,899',
-  },
   {
     id: 'route-66',
     name: 'Route 66',
@@ -97,7 +94,7 @@ export const allDesigns: Design[] = [
     name: 'Vows',
     subtitle: 'Minimal couple hoodie',
     collection: 'Couple Hoodie',
-    image: prewedding,
+    image: hoodie2,
     price: '₹1,799',
   },
   {
@@ -117,43 +114,21 @@ export const allDesigns: Design[] = [
     price: '₹1,999',
   },
   {
-    id: 'theek-hai-kuch-theek-nahi',
-    name: '"Theek Hai"',
-    subtitle: '+ Kuch Theek Nahi Hai',
-    collection: 'Our design',
-    image: theekHaiKuchTheekNahi,
-    price: '₹1,599',
-  },
-  {
-    id: 'one-man-show-producer',
-    name: 'One Man Show',
-    subtitle: '+ Show Ki Producer',
-    collection: 'Our design',
-    image: oneManShowProducer,
-    price: '₹1,599',
-  },
-  {
     id: 'limited-edition-owner',
     name: 'Limited Edition',
     subtitle: '+ Owner Of Limited Edition',
     collection: 'Our design',
-    image: limitedEditionOwner,
+    image: limitedEditionOwnerWhite,
+    images: [limitedEditionOwnerWhite, limitedEditionOwnerBlack],
     price: '₹1,699',
   },
   {
-    id: 'bigda-hua-bigaadne-wali',
-    name: 'Bigda Hua',
-    subtitle: '+ Bigaadne Wali',
+    id: 'booked-booking-confirmed',
+    name: 'Booked',
+    subtitle: '+ Booking Confirmed',
     collection: 'Our design',
-    image: bigdaHuaBigaadneWali,
-    price: '₹1,499',
-  },
-  {
-    id: 'trip-sponsor-planner',
-    name: 'Trip Sponsor',
-    subtitle: '+ Trip Planner',
-    collection: 'Our design',
-    image: tripSponsorPlanner,
+    image: bookedBookingConfirmedWhite,
+    images: [bookedBookingConfirmedWhite, bookedBookingConfirmedBlack],
     price: '₹1,599',
   },
 ];

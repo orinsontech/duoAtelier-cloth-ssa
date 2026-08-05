@@ -1,10 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SiteNav, SiteFooter, StickyWhatsApp } from "@/components/site-nav";
 import { allDesigns, type Collection } from "@/lib/designs";
+
+function DesignImageGallery({
+  images,
+  alt,
+  priority,
+}: {
+  images: string[];
+  alt: string;
+  priority?: boolean;
+}) {
+  const [index, setIndex] = useState(0);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  const goTo = (i: number) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const clamped = Math.max(0, Math.min(images.length - 1, i));
+    el.scrollTo({ left: clamped * el.clientWidth, behavior: "smooth" });
+  };
+
+  const handleScroll = () => {
+    const el = scrollerRef.current;
+    if (!el || el.clientWidth === 0) return;
+    setIndex(Math.round(el.scrollLeft / el.clientWidth));
+  };
+
+  return (
+    <div className="relative aspect-[4/5] overflow-hidden bg-cream rounded-md ring-1 ring-black/5">
+      <div
+        ref={scrollerRef}
+        onScroll={handleScroll}
+        className="no-scrollbar flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth"
+      >
+        {images.map((src, i) => (
+          <div key={src} className="relative h-full w-full shrink-0 snap-center">
+            <Image
+              src={src}
+              alt={alt}
+              fill
+              priority={priority && i === 0}
+              sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+              className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
+            />
+          </div>
+        ))}
+      </div>
+
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Previous image"
+            onClick={() => goTo(index - 1)}
+            disabled={index === 0}
+            className="absolute left-2 top-1/2 hidden h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-ivory/85 text-ink opacity-0 shadow-sm transition-opacity duration-300 group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-0 sm:flex"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            aria-label="Next image"
+            onClick={() => goTo(index + 1)}
+            disabled={index === images.length - 1}
+            className="absolute right-2 top-1/2 hidden h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-ivory/85 text-ink opacity-0 shadow-sm transition-opacity duration-300 group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-0 sm:flex"
+          >
+            ›
+          </button>
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
+            {images.map((src, i) => (
+              <span
+                key={src}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === index ? "w-4 bg-ivory" : "w-1.5 bg-ivory/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 const TABS = ["Customize Designs", "Our Designs"] as const;
 type Tab = (typeof TABS)[number];
@@ -76,16 +158,11 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filtered.map((d, i) => (
             <div key={d.id} className="group">
-              <div className="relative aspect-[4/5] overflow-hidden bg-cream rounded-md ring-1 ring-black/5">
-                <Image
-                  src={d.image}
-                  alt={d.name}
-                  fill
-                  priority={i < 4}
-                  sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover group-hover:scale-[1.03] transition-transform duration-700"
-                />
-              </div>
+              <DesignImageGallery
+                images={d.images ?? [d.image]}
+                alt={d.name}
+                priority={i < 4}
+              />
               <h3 className="mt-4 font-serif text-lg whitespace-nowrap">{d.name}</h3>
               <p className="text-[10px] uppercase tracking-[0.2em] text-ink/50">{d.collection}</p>
               <p className="mt-1 text-sm text-burgundy font-medium">{d.price}</p>
