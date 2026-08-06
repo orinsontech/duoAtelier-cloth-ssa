@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { z } from 'zod';
 import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
+import { DesignImageGallery } from '@/components/design-image-gallery';
 import { allDesigns, fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl, SITE_URL } from '@/lib/site';
 import { uploadReferenceImage } from '@/lib/cloudinary';
@@ -16,6 +17,11 @@ const detailsSchema = z.object({
   size1: z.string().min(1, 'Select size'),
   size2: z.string().min(1, 'Select size'),
   notes: z.string().max(500).optional(),
+});
+
+const fixedDesignSchema = z.object({
+  size1: z.string().min(1, 'Select size'),
+  size2: z.string().min(1, 'Select size'),
 });
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -88,14 +94,33 @@ export function CustomizePage({ designId }: { designId?: string }) {
     e.preventDefault();
 
     if (isFixedDesign) {
+      const form = new FormData(e.currentTarget);
+      const data = {
+        size1: String(form.get('size1') ?? ''),
+        size2: String(form.get('size2') ?? ''),
+      };
+      const parsed = fixedDesignSchema.safeParse(data);
+      if (!parsed.success) {
+        const errs: Record<string, string> = {};
+        for (const issue of parsed.error.issues) {
+          errs[String(issue.path[0])] = issue.message;
+        }
+        setErrors(errs);
+        return;
+      }
+      setErrors({});
+
       const imageUrl = preselected ? `${SITE_URL}${preselected.image}` : null;
       const lines = [
         '*New Couple Tshirt Order — Willy-Nilly*',
         '',
         `*Design:* ${preselected?.name}`,
         `*Collection:* ${preselected?.collection}`,
+        `*Fabric:* ${fabric}`,
+        `*Size (Partner 1):* ${data.size1}`,
+        `*Size (Partner 2):* ${data.size2}`,
         '',
-        "I'll share my sizing and delivery details in this chat.",
+        "I'll share my delivery details in this chat.",
         imageUrl ? `*Reference photo:* ${imageUrl}` : null,
       ]
         .filter(Boolean)
@@ -182,7 +207,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
         </h1>
         <p className="mt-4 text-sm text-ink/60 max-w-lg mx-auto">
           {isFixedDesign
-            ? 'Tap below to place your order on WhatsApp.'
+            ? 'Choose your fabric and size, then tap below to place your order on WhatsApp.'
             : 'Upload a reference, choose your fabric, and share your details. Your order goes to us on WhatsApp.'}
         </p>
       </header>
@@ -195,26 +220,34 @@ export function CustomizePage({ designId }: { designId?: string }) {
         <section>
           {!isFixedDesign && <StepLabel n="01" title="Your reference" />}
           <div className="mt-6 grid md:grid-cols-[280px_1fr] gap-8 items-start">
-            <div className="relative aspect-[4/5] rounded-md ring-1 ring-black/5 bg-cream overflow-hidden grid place-items-center">
-              {preview ? (
-                <Image
-                  src={preview}
-                  alt="Reference preview"
-                  fill
-                  sizes="280px"
-                  className="object-cover"
-                  unoptimized={preview.startsWith('blob:')}
-                />
-              ) : (
-                <span className="text-[10px] uppercase tracking-[0.25em] text-ink/40">
-                  No image yet
-                </span>
-              )}
-            </div>
+            {!file && preselected?.images && preselected.images.length > 1 ? (
+              <DesignImageGallery
+                images={preselected.images}
+                alt={preselected.name}
+                priority
+              />
+            ) : (
+              <div className="relative aspect-[4/5] rounded-md ring-1 ring-black/5 bg-cream overflow-hidden grid place-items-center">
+                {preview ? (
+                  <Image
+                    src={preview}
+                    alt="Reference preview"
+                    fill
+                    sizes="280px"
+                    className="object-cover"
+                    unoptimized={preview.startsWith('blob:')}
+                  />
+                ) : (
+                  <span className="text-[10px] uppercase tracking-[0.25em] text-ink/40">
+                    No image yet
+                  </span>
+                )}
+              </div>
+            )}
             <div>
               <p className="text-sm text-ink/70 max-w-md">
                 {isFixedDesign
-                  ? `You've selected "${preselected?.name}" — a signature print from our atelier. This design isn't customizable; tap below to place your order on WhatsApp.`
+                  ? `You've selected "${preselected?.name}" — a signature print from our atelier. Choose your fabric and size below, then tap below to place your order on WhatsApp.`
                   : preselected
                     ? `You've selected "${preselected.name}" from our catalog. You can also upload your own reference below.`
                     : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
@@ -251,8 +284,6 @@ export function CustomizePage({ designId }: { designId?: string }) {
         </section>
 
         {/* STEP 2: Fabric */}
-        {!isFixedDesign && (
-        <>
         <section>
           <StepLabel n="02" title="Select fabric weight" />
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -283,53 +314,71 @@ export function CustomizePage({ designId }: { designId?: string }) {
         </section>
 
         {/* STEP 3: Details */}
-        <section>
-          <StepLabel n="03" title="Your details" />
-          <div className="mt-6 grid md:grid-cols-2 gap-6">
-            <Field
-              label="Full name"
-              name="name"
-              error={errors.name}
-              placeholder="Aanya Kapoor"
-            />
-            <Field
-              label="Phone"
-              name="phone"
-              error={errors.phone}
-              placeholder="+91 98xxxxxxxx"
-            />
-            <div className="md:col-span-2">
-              <Field
-                label="Delivery address"
-                name="address"
-                textarea
-                error={errors.address}
-                placeholder="Flat, street, city, state, PIN"
+        {isFixedDesign ? (
+          <section>
+            <StepLabel n="03" title="Select size" />
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl">
+              <SelectField
+                label="Size — Partner 1"
+                name="size1"
+                options={sizes}
+                error={errors.size1}
+              />
+              <SelectField
+                label="Size — Partner 2"
+                name="size2"
+                options={sizes}
+                error={errors.size2}
               />
             </div>
-            <SelectField
-              label="Size — Partner 1"
-              name="size1"
-              options={sizes}
-              error={errors.size1}
-            />
-            <SelectField
-              label="Size — Partner 2"
-              name="size2"
-              options={sizes}
-              error={errors.size2}
-            />
-            <div className="md:col-span-2">
+          </section>
+        ) : (
+          <section>
+            <StepLabel n="03" title="Your details" />
+            <div className="mt-6 grid md:grid-cols-2 gap-6">
               <Field
-                label="Anything special? (names, dates, colours)"
-                name="notes"
-                textarea
-                placeholder="Optional — e.g. embroider 'A & R since 12.07.2024'"
+                label="Full name"
+                name="name"
+                error={errors.name}
+                placeholder="Aanya Kapoor"
               />
+              <Field
+                label="Phone"
+                name="phone"
+                error={errors.phone}
+                placeholder="+91 98xxxxxxxx"
+              />
+              <div className="md:col-span-2">
+                <Field
+                  label="Delivery address"
+                  name="address"
+                  textarea
+                  error={errors.address}
+                  placeholder="Flat, street, city, state, PIN"
+                />
+              </div>
+              <SelectField
+                label="Size — Partner 1"
+                name="size1"
+                options={sizes}
+                error={errors.size1}
+              />
+              <SelectField
+                label="Size — Partner 2"
+                name="size2"
+                options={sizes}
+                error={errors.size2}
+              />
+              <div className="md:col-span-2">
+                <Field
+                  label="Anything special? (names, dates, colours)"
+                  name="notes"
+                  textarea
+                  placeholder="Optional — e.g. embroider 'A & R since 12.07.2024'"
+                />
+              </div>
             </div>
-          </div>
-        </section>
-        </>
+          </section>
         )}
 
         {/* CTA */}
@@ -337,7 +386,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
           <p className="text-sm text-ink/60 max-w-md mx-auto">
             {isFixedDesign
               ? 'Tap below to open WhatsApp and place your order for this design.'
-              : 'Tap below to open WhatsApp with your order — and reference photo link — pre-filled.'}
+              : 'Tap below to open WhatsApp with your order — and reference photo link — pre-filled, and chat on WhatsApp.'}
           </p>
           <button
             type="submit"

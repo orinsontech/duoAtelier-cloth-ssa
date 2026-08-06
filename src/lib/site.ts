@@ -1,5 +1,5 @@
 // Update this WhatsApp number (with country code, no + or spaces) to receive orders.
-export const WHATSAPP_NUMBER = '919643986445';
+export const WHATSAPP_NUMBER = '919310694847';
 export const BRAND_NAME = 'Willy-Nilly';
 export const BRAND_TAGLINE =
   'Customized your Couple Tshirt and order on WhatsApp.';

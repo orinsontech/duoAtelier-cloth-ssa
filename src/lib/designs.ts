@@ -1,10 +1,12 @@
-const design1 = '/assets/design-1.jpg';
-const design2 = '/assets/design-2.jpg';
-const design3 = '/assets/design-3.jpg';
+const monogramEssential1 = '/assets/Monogram-Essential-1.png';
+const monogramEssential2 = '/assets/Monogram-Essential-2.jpg';
+const monogramEssential3 = '/assets/Monogram-Essential-3.jpg';
+const always1 = '/assets/always-1.png';
+const always2 = '/assets/always-2.jpg';
 const honeymoon = '/assets/col-honeymoon.jpg';
 const trip = '/assets/col-trip.jpg';
-const prewedding = '/assets/col-prewedding.jpg';
-const love = '/assets/col-love.jpg';
+const ourDesign1 = '/assets/our-design-1.png';
+const ourDesign2 = '/assets/our-design-2.png';
 
 const soldOutProudOwnerWhite = '/assets/our-design/sold-out-proud-owner-white.jpg';
 const soldOutProudOwnerBlack = '/assets/our-design/sold-out-proud-owner-black.jpg';
@@ -22,21 +24,24 @@ export const collections: {
   name: Collection;
   tagline: string;
   image: string;
+  images?: string[];
 }[] = [
   {
     name: 'Couple T Shirt',
     tagline: 'Matching tees, made for your story',
-    image: love,
+    image: monogramEssential1,
+    images: [monogramEssential1, always2],
   },
   {
     name: 'Couple Hoodie',
     tagline: 'Cozy pair sets for every season',
-    image: trip,
+    image: hoodie2,
   },
   {
     name: 'Our design',
     tagline: 'Signature picks from the atelier',
-    image: prewedding,
+    image: ourDesign1,
+    images: [ourDesign1, ourDesign2],
   },
 ];
 
@@ -56,7 +61,8 @@ export const topDesigns: Design[] = [
     name: 'Monogram Essential',
     subtitle: 'Embroidered initials',
     collection: 'Couple T Shirt',
-    image: design1,
+    image: monogramEssential1,
+    images: [monogramEssential1, monogramEssential2, monogramEssential3],
     price: '₹1,499',
   },
   {
@@ -102,7 +108,8 @@ export const allDesigns: Design[] = [
     name: 'Always',
     subtitle: 'Signature tee classic',
     collection: 'Couple T Shirt',
-    image: love,
+    image: always1,
+    images: [always1, always2],
     price: '₹1,499',
   },
   {
@@ -111,7 +118,7 @@ export const allDesigns: Design[] = [
     subtitle: 'Premium tee fit',
     collection: 'Couple T Shirt',
     image: honeymoon,
-    price: '₹1,999',
+    price: '₹1,499',
   },
   {
     id: 'limited-edition-owner',

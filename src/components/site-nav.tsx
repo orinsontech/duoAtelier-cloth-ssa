@@ -9,7 +9,7 @@ export function SiteNav() {
         <div className="flex items-center gap-8 min-w-0">
           <Link href="/" className="flex items-center min-w-0">
             <Image
-              src="/logo.jpeg"
+              src="/logo.png"
               alt={`${BRAND_NAME} logo`}
               width={660}
               height={146}
@@ -80,7 +80,7 @@ export function SiteFooter() {
           <div>
             <div className="flex items-center justify-center md:justify-start">
               <Image
-                src="/logo.jpeg"
+                src="/logo.png"
                 alt={`${BRAND_NAME} logo`}
                 width={660}
                 height={146}

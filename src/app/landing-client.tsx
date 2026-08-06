@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
 import { CoupleStoryVideos } from '@/components/couple-story-videos';
+import { DesignImageGallery } from '@/components/design-image-gallery';
 import { collections, topDesigns, fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl } from '@/lib/site';
 
@@ -152,15 +153,23 @@ export function Landing() {
                 href={`/designs?collection=${encodeURIComponent(c.name)}`}
                 className="group"
               >
-                <div className="relative aspect-[4/5] overflow-hidden rounded-md ring-1 ring-black/5">
-                  <Image
-                    src={c.image}
+                {c.images && c.images.length > 1 ? (
+                  <DesignImageGallery
+                    images={c.images}
                     alt={`${c.name} Collection`}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                    imageClassName="grayscale group-hover:grayscale-0 transition-all duration-700"
                   />
-                </div>
+                ) : (
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-md ring-1 ring-black/5">
+                    <Image
+                      src={c.image}
+                      alt={`${c.name} Collection`}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                )}
                 <h3 className="font-serif text-2xl italic mt-4">
                   {c.name} Collection
                 </h3>

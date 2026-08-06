@@ -30,6 +30,10 @@ export function CoupleStoryVideos() {
     if (!video) return;
     video.muted = !video.muted;
     setMutedIndex(video.muted ? i : null);
+    if (i === stories.length - 1) {
+      // last video's audio always stays muted, regardless of the toggle
+      video.muted = true;
+    }
   };
 
   const toggle = (i: number) => {
@@ -66,6 +70,7 @@ export function CoupleStoryVideos() {
             }}
             src={v.src}
             poster={v.poster}
+            muted={i === stories.length - 1 ? true : undefined}
             playsInline
             preload="metadata"
             disablePictureInPicture
