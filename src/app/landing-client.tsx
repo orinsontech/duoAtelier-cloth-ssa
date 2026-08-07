@@ -18,6 +18,11 @@ export function Landing() {
         <span className="animate-fade-up inline-block text-[10px] uppercase tracking-[0.35em] text-burgundy mb-6">
           The Bespoke Couple Atelier
         </span>
+        <p className="animate-fade-up flex items-center justify-center gap-4 mb-10 font-serif italic text-xl md:text-2xl text-burgundy">
+          <span className="h-px w-10 bg-burgundy/30" />
+          India&apos;s Best Couple T-Shirt Platform
+          <span className="h-px w-10 bg-burgundy/30" />
+        </p>
         <div className="animate-fade-up grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-14 md:gap-16 items-start max-w-5xl mx-auto text-center">
           <div>
             <h1 className="font-serif text-4xl md:text-5xl leading-tight uppercase">

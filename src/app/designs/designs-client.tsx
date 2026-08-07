@@ -81,7 +81,11 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
                 alt={d.name}
                 priority={i < 4}
               />
-              <h3 className="mt-4 font-serif text-lg whitespace-nowrap">{d.name}</h3>
+              <h3 className="mt-4 font-serif text-lg">
+                {d.collection === "Our design"
+                  ? `${d.name} - ${d.subtitle.replace(/^\+\s*/, "")}`
+                  : d.name}
+              </h3>
               <p className="text-[10px] uppercase tracking-[0.2em] text-ink/50">{d.collection}</p>
               <p className="mt-1 text-sm text-burgundy font-medium">{d.price}</p>
               <Link

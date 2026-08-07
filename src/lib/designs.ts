@@ -93,7 +93,7 @@ export const allDesigns: Design[] = [
     subtitle: 'Street hoodie series',
     collection: 'Couple Hoodie',
     image: trip,
-    price: '₹1,699',
+    price: '₹2,499',
   },
   {
     id: 'vows',
@@ -101,7 +101,7 @@ export const allDesigns: Design[] = [
     subtitle: 'Minimal couple hoodie',
     collection: 'Couple Hoodie',
     image: hoodie2,
-    price: '₹1,799',
+    price: '₹2,499',
   },
   {
     id: 'always',
@@ -127,7 +127,7 @@ export const allDesigns: Design[] = [
     collection: 'Our design',
     image: limitedEditionOwnerWhite,
     images: [limitedEditionOwnerWhite, limitedEditionOwnerBlack],
-    price: '₹1,699',
+    price: '₹1,499',
   },
   {
     id: 'booked-booking-confirmed',
@@ -136,7 +136,7 @@ export const allDesigns: Design[] = [
     collection: 'Our design',
     image: bookedBookingConfirmedWhite,
     images: [bookedBookingConfirmedWhite, bookedBookingConfirmedBlack],
-    price: '₹1,599',
+    price: '₹1,499',
   },
 ];
 
