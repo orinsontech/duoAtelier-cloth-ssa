@@ -4,7 +4,7 @@ const monogramEssential3 = '/assets/Monogram-Essential-3.jpg';
 const always1 = '/assets/always-1.png';
 const always2 = '/assets/always-2.jpg';
 const honeymoon = '/assets/col-honeymoon.jpg';
-const trip = '/assets/col-trip.jpg';
+const trip = '/assets/col-trip-2.jpg';
 const ourDesign1 = '/assets/our-design-1.png';
 const ourDesign2 = '/assets/our-design-2.png';
 
