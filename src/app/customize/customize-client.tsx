@@ -32,15 +32,20 @@ export function CustomizePage({ designId }: { designId?: string }) {
     [designId],
   );
   const isFixedDesign = preselected?.collection === 'Our design';
+  const preselectedName = preselected
+    ? isFixedDesign
+      ? `${preselected.name} - ${preselected.subtitle.replace(/^\+\s*/, '')}`
+      : preselected.name
+    : null;
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(
     preselected?.image ?? null,
   );
   const [fileName, setFileName] = useState<string | null>(
-    preselected ? `${preselected.name} (from catalog)` : null,
+    preselected ? `${preselectedName} (from catalog)` : null,
   );
-  const [fabric, setFabric] = useState<string>('200 GSM');
+  const [fabric, setFabric] = useState<string>('180 GSM');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -114,11 +119,11 @@ export function CustomizePage({ designId }: { designId?: string }) {
       const lines = [
         '*New Couple Tshirt Order — Willy-Nilly*',
         '',
-        `*Design:* ${preselected?.name}`,
+        `*Design:* ${preselectedName}`,
         `*Collection:* ${preselected?.collection}`,
         `*Fabric:* ${fabric}`,
-        `*Size (Partner 1):* ${data.size1}`,
-        `*Size (Partner 2):* ${data.size2}`,
+        `*Size (Her):* ${data.size1}`,
+        `*Size (Him):* ${data.size2}`,
         '',
         "I'll share my delivery details in this chat.",
         imageUrl ? `*Reference photo:* ${imageUrl}` : null,
@@ -173,11 +178,11 @@ export function CustomizePage({ designId }: { designId?: string }) {
     const lines = [
       '*New Couple Tshirt Order — Willy-Nilly*',
       '',
-      `*Design:* ${preselected ? preselected.name : fileName ? `Custom upload — ${fileName}` : 'Custom upload'}`,
+      `*Design:* ${preselected ? preselectedName : fileName ? `Custom upload — ${fileName}` : 'Custom upload'}`,
       preselected ? `*Collection:* ${preselected.collection}` : null,
       `*Fabric:* ${fabric}`,
-      `*Size (Partner 1):* ${data.size1}`,
-      `*Size (Partner 2):* ${data.size2}`,
+      `*Size (Her):* ${data.size1}`,
+      `*Size (Him):* ${data.size2}`,
       '',
       `*Name:* ${data.name}`,
       `*Phone:* ${data.phone}`,
@@ -247,9 +252,9 @@ export function CustomizePage({ designId }: { designId?: string }) {
             <div>
               <p className="text-sm text-ink/70 max-w-md">
                 {isFixedDesign
-                  ? `You've selected "${preselected?.name}" — a signature print from our atelier. Choose your fabric and size below, then tap below to place your order on WhatsApp.`
+                  ? `You've selected "${preselectedName}" — a signature print from our atelier. Choose your fabric and size below, then tap below to place your order on WhatsApp.`
                   : preselected
-                    ? `You've selected "${preselected.name}" from our catalog. You can also upload your own reference below.`
+                    ? `You've selected "${preselectedName}" from our catalog. You can also upload your own reference below.`
                     : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
               </p>
               {!isFixedDesign && (
@@ -319,13 +324,13 @@ export function CustomizePage({ designId }: { designId?: string }) {
             <StepLabel n="03" title="Select size" />
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl">
               <SelectField
-                label="Size — Partner 1"
+                label="Size — Her"
                 name="size1"
                 options={sizes}
                 error={errors.size1}
               />
               <SelectField
-                label="Size — Partner 2"
+                label="Size — Him"
                 name="size2"
                 options={sizes}
                 error={errors.size2}
@@ -358,13 +363,13 @@ export function CustomizePage({ designId }: { designId?: string }) {
                 />
               </div>
               <SelectField
-                label="Size — Partner 1"
+                label="Size — Her"
                 name="size1"
                 options={sizes}
                 error={errors.size1}
               />
               <SelectField
-                label="Size — Partner 2"
+                label="Size — Him"
                 name="size2"
                 options={sizes}
                 error={errors.size2}
