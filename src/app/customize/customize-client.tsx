@@ -1,14 +1,22 @@
 'use client';
 
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { z } from 'zod';
-import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
-import { DesignImageGallery } from '@/components/design-image-gallery';
-import { allDesigns, fabrics } from '@/lib/designs';
+import { Truck, RefreshCw, ShieldCheck, Banknote } from 'lucide-react';
+import { SiteNav, SiteFooter } from '@/components/site-nav';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import { fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl, SITE_URL } from '@/lib/site';
 import { uploadReferenceImage } from '@/lib/cloudinary';
+import type { Product } from '@/lib/products';
+import { formatPrice } from '@/lib/price';
 
 const detailsSchema = z.object({
   name: z.string().trim().min(2, 'Name is required').max(80),
@@ -26,26 +34,32 @@ const fixedDesignSchema = z.object({
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
-export function CustomizePage({ designId }: { designId?: string }) {
-  const preselected = useMemo(
-    () => allDesigns.find((d) => d.id === designId) ?? null,
-    [designId],
-  );
-  const isFixedDesign = preselected?.collection === 'Our design';
-  const preselectedName = preselected
+function toAbsoluteUrl(path: string) {
+  return path.startsWith('http') ? path : `${SITE_URL}${path}`;
+}
+
+export function CustomizePage({
+  product,
+  relatedProducts,
+}: {
+  product: Product | null;
+  relatedProducts: Product[];
+}) {
+  const isFixedDesign = product?.collection === 'Our design';
+  const productTitle = product
     ? isFixedDesign
-      ? `${preselected.name} - ${preselected.subtitle.replace(/^\+\s*/, '')}`
-      : preselected.name
-    : null;
+      ? `${product.name} - ${product.subtitle.replace(/^\+\s*/, '')}`
+      : product.name
+    : 'Customize your Couple Tshirt';
 
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(
-    preselected?.image ?? null,
-  );
+  const [preview, setPreview] = useState<string | null>(product?.images[0] ?? null);
   const [fileName, setFileName] = useState<string | null>(
-    preselected ? `${preselectedName} (from catalog)` : null,
+    product ? `${productTitle} (from catalog)` : null,
   );
+  const [galleryIndex, setGalleryIndex] = useState(0);
   const [fabric, setFabric] = useState<string>('180 GSM');
+  const [color, setColor] = useState<string>(product?.colors[0]?.name ?? '');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -60,34 +74,25 @@ export function CustomizePage({ designId }: { designId?: string }) {
   };
 
   useEffect(() => {
-    // If the user picked a file on the landing page we stored a blob URL
-    // and filename in sessionStorage. Attempt to reconstruct the File so
-    // the preview and upload flow work seamlessly after navigation.
     const tryRestore = async () => {
       try {
         const blobUrl = sessionStorage.getItem('da_uploaded_preview');
         const name = sessionStorage.getItem('da_uploaded_name');
         if (blobUrl && name && !file) {
-          // Try to fetch the blob and convert to File. This works when the
-          // blob URL was created in the same browsing context during SPA
-          // navigation.
           const resp = await fetch(blobUrl);
           if (resp.ok) {
             const b = await resp.blob();
             const reconstructed = new File([b], name, { type: b.type });
             onFile(reconstructed);
-            // Clean up the session keys to avoid stale data later.
             sessionStorage.removeItem('da_uploaded_preview');
             sessionStorage.removeItem('da_uploaded_name');
           } else {
-            // If fetch failed, at least show the preview URL and filename
             setPreview(blobUrl);
             setFileName(name);
           }
         }
-      } catch (e) {
-        // Non-fatal — if reconstruction fails, we silently fall back and
-        // let the user re-upload on this page.
+      } catch {
+        // Non-fatal — if reconstruction fails, the user can re-upload here.
       }
     };
 
@@ -98,7 +103,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isFixedDesign) {
+    if (isFixedDesign && product) {
       const form = new FormData(e.currentTarget);
       const data = {
         size1: String(form.get('size1') ?? ''),
@@ -115,13 +120,15 @@ export function CustomizePage({ designId }: { designId?: string }) {
       }
       setErrors({});
 
-      const imageUrl = preselected ? `${SITE_URL}${preselected.image}` : null;
+      const imageUrl = product.images[0] ? toAbsoluteUrl(product.images[0]) : null;
       const lines = [
         '*New Couple Tshirt Order — Willy-Nilly*',
         '',
-        `*Design:* ${preselectedName}`,
-        `*Collection:* ${preselected?.collection}`,
+        `*Design:* ${productTitle}`,
+        `*Collection:* ${product.collection}`,
         `*Fabric:* ${fabric}`,
+        color ? `*Color:* ${color}` : null,
+        `*Price:* ${formatPrice(product.price)}`,
         `*Size (Her):* ${data.size1}`,
         `*Size (Him):* ${data.size2}`,
         '',
@@ -155,10 +162,6 @@ export function CustomizePage({ designId }: { designId?: string }) {
     setErrors({});
     setUploadError(null);
 
-    // Try to get a link to the reference photo so it rides along with the
-    // WhatsApp text. Custom uploads go to Cloudinary; catalog picks just use
-    // the design's own image URL. If the upload fails, fall back to asking
-    // the customer to attach it manually in the chat.
     let imageUrl: string | null = null;
     if (file) {
       setSubmitting(true);
@@ -171,16 +174,18 @@ export function CustomizePage({ designId }: { designId?: string }) {
       } finally {
         setSubmitting(false);
       }
-    } else if (!file && preselected) {
-      imageUrl = `${SITE_URL}${preselected.image}`;
+    } else if (!file && product?.images[0]) {
+      imageUrl = toAbsoluteUrl(product.images[0]);
     }
 
     const lines = [
       '*New Couple Tshirt Order — Willy-Nilly*',
       '',
-      `*Design:* ${preselected ? preselectedName : fileName ? `Custom upload — ${fileName}` : 'Custom upload'}`,
-      preselected ? `*Collection:* ${preselected.collection}` : null,
+      `*Design:* ${product ? productTitle : fileName ? `Custom upload — ${fileName}` : 'Custom upload'}`,
+      product ? `*Collection:* ${product.collection}` : null,
+      product ? `*Price:* ${formatPrice(product.price)}` : null,
       `*Fabric:* ${fabric}`,
+      color ? `*Color:* ${color}` : null,
       `*Size (Her):* ${data.size1}`,
       `*Size (Him):* ${data.size2}`,
       '',
@@ -199,38 +204,65 @@ export function CustomizePage({ designId }: { designId?: string }) {
     window.open(buildWhatsAppUrl(lines), '_blank');
   };
 
+  const showGallery = !file && product && product.images.length > 0;
+  const galleryImages = product?.images ?? [];
+
   return (
-    <div className="min-h-screen bg-ivory text-ink">
+    <div className="min-h-screen bg-ivory text-ink pb-28 lg:pb-0">
       <SiteNav />
 
-      <header className="px-6 lg:px-10 pt-14 pb-8 text-center border-b border-border">
-        <span className="text-[10px] uppercase tracking-[0.35em] text-burgundy">
-          Your Bespoke Order
-        </span>
-        <h1 className="font-serif text-4xl md:text-6xl italic mt-3">
-          {isFixedDesign ? 'Order your Couple Tshirt' : 'Customize your Couple Tshirt'}
-        </h1>
-        <p className="mt-4 text-sm text-ink/60 max-w-lg mx-auto">
-          {isFixedDesign
-            ? 'Choose your fabric and size, then tap below to place your order on WhatsApp.'
-            : 'Upload a reference, choose your fabric, and share your details. Your order goes to us on WhatsApp.'}
-        </p>
-      </header>
+      {/* BREADCRUMB */}
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 text-[11px] uppercase tracking-[0.15em] text-ink/40">
+        <Link href="/" className="hover:text-burgundy transition-colors">
+          Home
+        </Link>
+        <span className="mx-2">/</span>
+        <Link href="/designs" className="hover:text-burgundy transition-colors">
+          {product ? product.collection : 'Customize'}
+        </Link>
+        {product && (
+          <>
+            <span className="mx-2">/</span>
+            <span className="text-ink/70">{productTitle}</span>
+          </>
+        )}
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-5xl mx-auto px-6 lg:px-10 py-16 space-y-20"
-      >
-        {/* STEP 1: Reference */}
-        <section>
-          {!isFixedDesign && <StepLabel n="01" title="Your reference" />}
-          <div className="mt-6 grid md:grid-cols-[280px_1fr] gap-8 items-start">
-            {!file && preselected?.images && preselected.images.length > 1 ? (
-              <DesignImageGallery
-                images={preselected.images}
-                alt={preselected.name}
-                priority
-              />
+      <form onSubmit={handleSubmit} id="product-form">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-16 grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+          {/* LEFT: GALLERY */}
+          <div className="lg:sticky lg:top-24">
+            {showGallery ? (
+              <div>
+                <div className="relative aspect-[4/5] rounded-md ring-1 ring-black/5 bg-cream overflow-hidden">
+                  <Image
+                    src={galleryImages[galleryIndex]}
+                    alt={productTitle}
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 45vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                {galleryImages.length > 1 && (
+                  <div className="no-scrollbar mt-4 flex gap-3 overflow-x-auto">
+                    {galleryImages.map((src, i) => (
+                      <button
+                        key={src}
+                        type="button"
+                        onClick={() => setGalleryIndex(i)}
+                        className={`relative h-20 w-16 shrink-0 overflow-hidden rounded-md transition-all ${
+                          i === galleryIndex
+                            ? 'ring-2 ring-burgundy'
+                            : 'ring-1 ring-black/10 opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <Image src={src} alt="" fill sizes="64px" className="object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ) : (
               <div className="relative aspect-[4/5] rounded-md ring-1 ring-black/5 bg-cream overflow-hidden grid place-items-center">
                 {preview ? (
@@ -238,7 +270,7 @@ export function CustomizePage({ designId }: { designId?: string }) {
                     src={preview}
                     alt="Reference preview"
                     fill
-                    sizes="280px"
+                    sizes="(min-width: 1024px) 45vw, 100vw"
                     className="object-cover"
                     unoptimized={preview.startsWith('blob:')}
                   />
@@ -249,16 +281,45 @@ export function CustomizePage({ designId }: { designId?: string }) {
                 )}
               </div>
             )}
+          </div>
+
+          {/* RIGHT: INFO PANEL */}
+          <div className="lg:sticky lg:top-24 space-y-9">
             <div>
-              <p className="text-sm text-ink/70 max-w-md">
-                {isFixedDesign
-                  ? `You've selected "${preselectedName}" — a signature print from our atelier. Choose your fabric and size below, then tap below to place your order on WhatsApp.`
-                  : preselected
-                    ? `You've selected "${preselectedName}" from our catalog. You can also upload your own reference below.`
-                    : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
+              <span className="text-[10px] uppercase tracking-[0.35em] text-burgundy">
+                {product ? product.collection : 'Bespoke Order'}
+              </span>
+              <h1 className="font-serif text-4xl md:text-5xl italic mt-3 text-balance">
+                {productTitle}
+              </h1>
+
+              {product ? (
+                <div className="mt-4 flex items-baseline gap-3">
+                  <span className="text-2xl text-burgundy font-medium">
+                    {formatPrice(product.price)}
+                  </span>
+                  {product.compareAtPrice && product.compareAtPrice > product.price && (
+                    <span className="text-base text-ink/40 line-through">
+                      {formatPrice(product.compareAtPrice)}
+                    </span>
+                  )}
+                  <span className="text-[11px] text-ink/40">inclusive of taxes</span>
+                </div>
+              ) : (
+                <p className="mt-4 text-[11px] uppercase tracking-[0.2em] text-ink/40">
+                  Final price confirmed on WhatsApp
+                </p>
+              )}
+
+              <p className="mt-5 text-sm text-ink/70 leading-relaxed max-w-md">
+                {product
+                  ? product.description ||
+                    `You've selected "${productTitle}" from our catalog. Choose your fabric and size below.`
+                  : "Upload a photo you love — a couple portrait, a mood image, or a design sketch. We'll craft the print from it."}
               </p>
+
               {!isFixedDesign && (
-                <>
+                <div className="mt-6">
                   <input
                     ref={fileRef}
                     type="file"
@@ -272,9 +333,9 @@ export function CustomizePage({ designId }: { designId?: string }) {
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
-                    className="mt-6 inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-[11px] uppercase tracking-[0.25em] hover:border-ink hover:bg-cream"
+                    className="inline-flex items-center gap-2 rounded-full border border-ink/20 px-6 py-3 text-[11px] uppercase tracking-[0.25em] hover:border-ink hover:bg-cream"
                   >
-                    {file ? 'Replace image' : 'Upload your design'}
+                    {file ? 'Replace image' : product ? 'Or upload your own design' : 'Upload your design'}
                   </button>
                   {fileName && (
                     <p className="mt-3 text-xs text-ink/50">Selected: {fileName}</p>
@@ -282,144 +343,278 @@ export function CustomizePage({ designId }: { designId?: string }) {
                   {uploadError && (
                     <p className="mt-2 text-xs text-destructive">{uploadError}</p>
                   )}
-                </>
+                </div>
               )}
             </div>
-          </div>
-        </section>
 
-        {/* STEP 2: Fabric */}
-        <section>
-          <StepLabel n="02" title="Select fabric weight" />
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {fabrics.map((f) => {
-              const active = fabric === f.gsm;
-              return (
-                <button
-                  key={f.gsm}
-                  type="button"
-                  onClick={() => setFabric(f.gsm)}
-                  className={`text-left p-5 rounded-xl border transition-colors ${
-                    active
-                      ? 'border-burgundy bg-burgundy/5'
-                      : 'border-border hover:border-ink'
-                  }`}
-                >
-                  <span className="block font-serif text-2xl">{f.gsm}</span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-burgundy font-medium mt-1 block">
-                    {f.label}
-                  </span>
-                  <span className="text-[11px] text-ink/50 mt-2 block">
-                    {f.note}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* STEP 3: Details */}
-        {isFixedDesign ? (
-          <section>
-            <StepLabel n="03" title="Select size" />
-            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl">
-              <SelectField
-                label="Size — Her"
-                name="size1"
-                options={sizes}
-                error={errors.size1}
-              />
-              <SelectField
-                label="Size — Him"
-                name="size2"
-                options={sizes}
-                error={errors.size2}
-              />
-            </div>
-          </section>
-        ) : (
-          <section>
-            <StepLabel n="03" title="Your details" />
-            <div className="mt-6 grid md:grid-cols-2 gap-6">
-              <Field
-                label="Full name"
-                name="name"
-                error={errors.name}
-                placeholder="Aanya Kapoor"
-              />
-              <Field
-                label="Phone"
-                name="phone"
-                error={errors.phone}
-                placeholder="+91 98xxxxxxxx"
-              />
-              <div className="md:col-span-2">
-                <Field
-                  label="Delivery address"
-                  name="address"
-                  textarea
-                  error={errors.address}
-                  placeholder="Flat, street, city, state, PIN"
-                />
-              </div>
-              <SelectField
-                label="Size — Her"
-                name="size1"
-                options={sizes}
-                error={errors.size1}
-              />
-              <SelectField
-                label="Size — Him"
-                name="size2"
-                options={sizes}
-                error={errors.size2}
-              />
-              <div className="md:col-span-2">
-                <Field
-                  label="Anything special? (names, dates, colours)"
-                  name="notes"
-                  textarea
-                  placeholder="Optional — e.g. embroider 'A & R since 12.07.2024'"
-                />
+            {/* FABRIC */}
+            <div>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">
+                Fabric weight
+              </span>
+              <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {fabrics.map((f) => {
+                  const active = fabric === f.gsm;
+                  return (
+                    <button
+                      key={f.gsm}
+                      type="button"
+                      onClick={() => setFabric(f.gsm)}
+                      className={`text-left p-3 rounded-lg border transition-colors ${
+                        active
+                          ? 'border-burgundy bg-burgundy/5'
+                          : 'border-border hover:border-ink'
+                      }`}
+                    >
+                      <span className="block font-serif text-lg">{f.gsm}</span>
+                      <span className="text-[9px] uppercase tracking-[0.15em] text-burgundy font-medium mt-0.5 block">
+                        {f.label}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          </section>
-        )}
 
-        {/* CTA */}
-        <section className="border-t border-border pt-12 text-center">
-          <p className="text-sm text-ink/60 max-w-md mx-auto">
-            {isFixedDesign
-              ? 'Tap below to open WhatsApp and place your order for this design.'
-              : 'Tap below to open WhatsApp with your order — and reference photo link — pre-filled, and chat on WhatsApp.'}
-          </p>
-          <button
-            type="submit"
-            disabled={submitting}
-            className="mt-8 inline-flex items-center gap-3 rounded-full bg-whatsapp text-ink px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-semibold shadow-luxe hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:hover:scale-100"
-          >
-            {submitting ? 'Uploading photo…' : 'Place order on WhatsApp'}
-          </button>
-          <p className="mt-6 text-[10px] uppercase tracking-[0.25em] text-ink/40">
-            or{' '}
-            <Link href="/designs" className="border-b border-ink/30">
-              browse more designs
-            </Link>
-          </p>
-        </section>
+            {/* COLOR */}
+            {product && product.colors.length > 0 && (
+              <div>
+                <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">
+                  Color{color ? ` — ${color}` : ''}
+                </span>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  {product.colors.map((c) => (
+                    <button
+                      key={c.name}
+                      type="button"
+                      aria-label={c.name}
+                      title={c.name}
+                      onClick={() => setColor(c.name)}
+                      className={`h-9 w-9 rounded-full ring-1 ring-black/10 transition-all ${
+                        color === c.name
+                          ? 'ring-2 ring-offset-2 ring-burgundy'
+                          : 'hover:scale-110'
+                      }`}
+                      style={{ backgroundColor: c.hex }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* SIZES */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <SizePicker label="Size — Her" name="size1" error={errors.size1} />
+              <SizePicker label="Size — Him" name="size2" error={errors.size2} />
+            </div>
+
+            {/* CUSTOM ORDER DETAILS */}
+            {!isFixedDesign && (
+              <div className="space-y-6 border-t border-border pt-8">
+                <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">
+                  Your details
+                </span>
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <Field
+                    label="Full name"
+                    name="name"
+                    error={errors.name}
+                    placeholder="Aanya Kapoor"
+                  />
+                  <Field
+                    label="Phone"
+                    name="phone"
+                    error={errors.phone}
+                    placeholder="+91 98xxxxxxxx"
+                  />
+                  <div className="sm:col-span-2">
+                    <Field
+                      label="Delivery address"
+                      name="address"
+                      textarea
+                      error={errors.address}
+                      placeholder="Flat, street, city, state, PIN"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <Field
+                      label="Anything special? (names, dates, colours)"
+                      name="notes"
+                      textarea
+                      placeholder="Optional — e.g. embroider 'A & R since 12.07.2024'"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TRUST BADGES */}
+            <div className="grid grid-cols-2 gap-4 border-t border-b border-border py-6">
+              <TrustBadge icon={Banknote} label="Cash on delivery available" />
+              <TrustBadge icon={Truck} label="Pan-India shipping" />
+              <TrustBadge icon={ShieldCheck} label="Made to order, with care" />
+              <TrustBadge icon={RefreshCw} label="Easy size exchange" />
+            </div>
+
+            {/* CTA */}
+            <div>
+              <button
+                type="submit"
+                form="product-form"
+                disabled={submitting}
+                className="w-full inline-flex items-center justify-center gap-3 rounded-full bg-whatsapp text-ink px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-semibold shadow-luxe hover:scale-[1.01] transition-transform disabled:opacity-60 disabled:hover:scale-100"
+              >
+                {submitting ? 'Uploading photo…' : 'Place order on WhatsApp'}
+              </button>
+              <p className="mt-4 text-center text-[10px] uppercase tracking-[0.25em] text-ink/40">
+                or{' '}
+                <Link href="/designs" className="border-b border-ink/30">
+                  browse more designs
+                </Link>
+              </p>
+            </div>
+
+            {/* ACCORDIONS */}
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="details">
+                <AccordionTrigger className="text-[11px] uppercase tracking-[0.2em]">
+                  Product details
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-ink/60 leading-relaxed">
+                  {product?.description ||
+                    'Every piece is cut and printed to order — expect small, lovely variations from batch to batch.'}
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="fabric">
+                <AccordionTrigger className="text-[11px] uppercase tracking-[0.2em]">
+                  Fabric &amp; care
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-ink/60 leading-relaxed">
+                  100% combed cotton, milled in 180–280 GSM weights. Machine wash cold,
+                  inside out, with like colours. Do not bleach. Iron on reverse.
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="shipping">
+                <AccordionTrigger className="text-[11px] uppercase tracking-[0.2em]">
+                  Shipping &amp; returns
+                </AccordionTrigger>
+                <AccordionContent className="text-sm text-ink/60 leading-relaxed">
+                  Made to order and dispatched within 3–5 business days, shipped
+                  pan-India. Wrong size or a print issue? Easy exchange within 7 days
+                  of delivery — just message us on WhatsApp.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
       </form>
 
+      {/* RELATED PRODUCTS */}
+      {relatedProducts.length > 0 && (
+        <section className="border-t border-border py-16 px-6 lg:px-10">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="font-serif text-2xl md:text-3xl italic mb-8">
+              You may also like
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              {relatedProducts.map((p) => (
+                <Link key={p.slug} href={`/customize?design=${encodeURIComponent(p.slug)}`}>
+                  <div className="relative aspect-[4/5] overflow-hidden rounded-md ring-1 ring-black/5 bg-cream">
+                    {p.images[0] && (
+                      <Image
+                        src={p.images[0]}
+                        alt={p.name}
+                        fill
+                        sizes="(min-width: 768px) 25vw, 50vw"
+                        className="object-cover hover:scale-105 transition-transform duration-500"
+                      />
+                    )}
+                  </div>
+                  <h3 className="mt-3 font-serif text-base">{p.name}</h3>
+                  <p className="mt-1 text-sm text-burgundy font-medium">
+                    {formatPrice(p.price)}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       <SiteFooter />
-      <StickyWhatsApp />
+
+      {/* MOBILE STICKY CTA */}
+      <div className="fixed bottom-0 inset-x-0 z-40 flex items-center justify-between gap-4 border-t border-border bg-ivory/95 backdrop-blur px-5 py-3 lg:hidden">
+        <div>
+          {product ? (
+            <span className="block text-lg font-medium text-burgundy">
+              {formatPrice(product.price)}
+            </span>
+          ) : (
+            <span className="block text-[10px] uppercase tracking-[0.2em] text-ink/50">
+              Price on WhatsApp
+            </span>
+          )}
+        </div>
+        <button
+          type="submit"
+          form="product-form"
+          disabled={submitting}
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-whatsapp text-ink px-6 py-3 text-[10px] uppercase tracking-[0.2em] font-semibold shadow-luxe disabled:opacity-60"
+        >
+          {submitting ? 'Uploading…' : 'Order on WhatsApp'}
+        </button>
+      </div>
     </div>
   );
 }
 
-function StepLabel({ n, title }: { n: string; title: string }) {
+function TrustBadge({
+  icon: Icon,
+  label,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}) {
   return (
-    <div className="flex items-baseline gap-4">
-      <span className="font-serif text-3xl italic text-burgundy">{n}</span>
-      <h2 className="font-serif text-2xl md:text-3xl">{title}</h2>
+    <div className="flex items-center gap-2.5">
+      <Icon className="h-4 w-4 shrink-0 text-burgundy" />
+      <span className="text-[11px] text-ink/60 leading-tight">{label}</span>
+    </div>
+  );
+}
+
+function SizePicker({
+  label,
+  name,
+  error,
+}: {
+  label: string;
+  name: string;
+  error?: string;
+}) {
+  const [value, setValue] = useState('');
+  return (
+    <div>
+      <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">{label}</span>
+      <input type="hidden" name={name} value={value} />
+      <div className="mt-2 flex flex-wrap gap-2">
+        {sizes.map((s) => (
+          <button
+            key={s}
+            type="button"
+            onClick={() => setValue(s)}
+            className={`h-9 min-w-9 px-2 rounded-full border text-xs uppercase tracking-wide transition-colors ${
+              value === s
+                ? 'border-burgundy bg-burgundy text-ivory'
+                : 'border-ink/20 hover:border-ink'
+            }`}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+      {error && <span className="mt-1 block text-[11px] text-destructive">{error}</span>}
     </div>
   );
 }
@@ -441,64 +636,13 @@ function Field({
     'w-full bg-transparent border-b border-ink/20 py-3 outline-none focus:border-burgundy transition-colors text-base font-light placeholder:text-ink/30';
   return (
     <label className="block">
-      <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">
-        {label}
-      </span>
+      <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">{label}</span>
       {textarea ? (
-        <textarea
-          name={name}
-          rows={2}
-          placeholder={placeholder}
-          className={shared}
-        />
+        <textarea name={name} rows={2} placeholder={placeholder} className={shared} />
       ) : (
-        <input
-          name={name}
-          type="text"
-          placeholder={placeholder}
-          className={shared}
-        />
+        <input name={name} type="text" placeholder={placeholder} className={shared} />
       )}
-      {error && (
-        <span className="mt-1 block text-[11px] text-destructive">{error}</span>
-      )}
-    </label>
-  );
-}
-
-function SelectField({
-  label,
-  name,
-  options,
-  error,
-}: {
-  label: string;
-  name: string;
-  options: readonly string[];
-  error?: string;
-}) {
-  return (
-    <label className="block">
-      <span className="text-[10px] uppercase tracking-[0.25em] text-ink/50">
-        {label}
-      </span>
-      <select
-        name={name}
-        defaultValue=""
-        className="w-full bg-transparent border-b border-ink/20 py-3 outline-none focus:border-burgundy transition-colors text-base font-light"
-      >
-        <option value="" disabled>
-          Select
-        </option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-      {error && (
-        <span className="mt-1 block text-[11px] text-destructive">{error}</span>
-      )}
+      {error && <span className="mt-1 block text-[11px] text-destructive">{error}</span>}
     </label>
   );
 }

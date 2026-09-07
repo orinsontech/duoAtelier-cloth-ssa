@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Landing } from "./landing-client";
+import { getFeaturedProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Create Your Customised Couple Tshirt",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <Landing />;
+export default async function Page() {
+  const featuredProducts = await getFeaturedProducts(3);
+  return <Landing featuredProducts={featuredProducts} />;
 }

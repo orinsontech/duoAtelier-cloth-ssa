@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CustomizePage } from "./customize-client";
+import { getProductBySlug, getRelatedProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Customize Your Couple Tshirt",
@@ -13,5 +14,10 @@ export default async function Page({
   searchParams: Promise<{ design?: string }>;
 }) {
   const { design } = await searchParams;
-  return <CustomizePage designId={design} />;
+  const product = design ? await getProductBySlug(design) : null;
+  const related = product
+    ? await getRelatedProducts(product.collection, product.slug, 4)
+    : [];
+
+  return <CustomizePage product={product} relatedProducts={related} />;
 }

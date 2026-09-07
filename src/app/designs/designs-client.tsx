@@ -4,7 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { SiteNav, SiteFooter, StickyWhatsApp } from "@/components/site-nav";
 import { DesignImageGallery } from "@/components/design-image-gallery";
-import { allDesigns, type Collection } from "@/lib/designs";
+import type { Collection } from "@/lib/designs";
+import type { Product } from "@/lib/products";
+import { formatPrice } from "@/lib/price";
 
 const TABS = ["Customize Designs", "Our Designs"] as const;
 type Tab = (typeof TABS)[number];
@@ -20,10 +22,16 @@ function subTabForCollection(collection?: Collection): CustomizeSubTab {
   return collection === "Couple Hoodie" ? "Couple Hoodie" : "Couple T Shirt";
 }
 
-export function DesignsPage({ initialCollection }: { initialCollection?: Collection }) {
+export function DesignsPage({
+  products,
+  initialCollection,
+}: {
+  products: Product[];
+  initialCollection?: Collection;
+}) {
   const [active, setActive] = useState<Tab>(tabForCollection(initialCollection));
   const [subTab, setSubTab] = useState<CustomizeSubTab>(subTabForCollection(initialCollection));
-  const filtered = allDesigns.filter((d) =>
+  const filtered = products.filter((d) =>
     active === "Our Designs" ? d.collection === "Our design" : d.collection === subTab,
   );
 
@@ -75,9 +83,9 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
       <section className="py-16 px-6 lg:px-10">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filtered.map((d, i) => (
-            <div key={d.id}>
+            <div key={d.slug}>
               <DesignImageGallery
-                images={d.images ?? [d.image]}
+                images={d.images}
                 alt={d.name}
                 priority={i < 4}
               />
@@ -87,9 +95,9 @@ export function DesignsPage({ initialCollection }: { initialCollection?: Collect
                   : d.name}
               </h3>
               <p className="text-[10px] uppercase tracking-[0.2em] text-ink/50">{d.collection}</p>
-              <p className="mt-1 text-sm text-burgundy font-medium">{d.price}</p>
+              <p className="mt-1 text-sm text-burgundy font-medium">{formatPrice(d.price)}</p>
               <Link
-                href={`/customize?design=${encodeURIComponent(d.id)}`}
+                href={`/customize?design=${encodeURIComponent(d.slug)}`}
                 className="mt-3 inline-flex items-center justify-center rounded-full bg-burgundy px-4 py-2 text-center text-[10px] uppercase tracking-[0.2em] font-semibold text-ivory transition-colors hover:bg-burgundy-deep"
               >
                 Buy Now - {d.collection === "Our design" ? "Order on WhatsApp" : "Customize your Tshirt"}

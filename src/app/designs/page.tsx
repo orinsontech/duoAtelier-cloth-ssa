@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DesignsPage } from "./designs-client";
 import type { Collection } from "@/lib/designs";
+import { getAllActiveProducts } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "All Designs",
@@ -18,5 +19,11 @@ export default async function Page({
   searchParams: Promise<{ collection?: string }>;
 }) {
   const { collection } = await searchParams;
-  return <DesignsPage initialCollection={collection as Collection | undefined} />;
+  const products = await getAllActiveProducts();
+  return (
+    <DesignsPage
+      products={products}
+      initialCollection={collection as Collection | undefined}
+    />
+  );
 }

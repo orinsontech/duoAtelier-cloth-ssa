@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { SiteNav, SiteFooter, StickyWhatsApp } from '@/components/site-nav';
 import { CoupleStoryVideos } from '@/components/couple-story-videos';
 import { DesignImageGallery } from '@/components/design-image-gallery';
-import { collections, topDesigns, fabrics } from '@/lib/designs';
+import { collections, fabrics } from '@/lib/designs';
 import { buildWhatsAppUrl } from '@/lib/site';
+import type { Product } from '@/lib/products';
+import { formatPrice } from '@/lib/price';
 
-export function Landing() {
+export function Landing({ featuredProducts }: { featuredProducts: Product[] }) {
   return (
     <div className="min-h-screen bg-ivory text-ink font-sans">
       <SiteNav />
@@ -237,14 +239,14 @@ export function Landing() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {topDesigns.map((d) => (
-              <div key={d.id} className="group">
+            {featuredProducts.map((d) => (
+              <div key={d.slug} className="group">
                 <Link
-                  href={`/customize?design=${encodeURIComponent(d.id)}`}
+                  href={`/customize?design=${encodeURIComponent(d.slug)}`}
                   className="relative aspect-[4/5] overflow-hidden bg-cream ring-1 ring-black/5 rounded-md block"
                 >
                   <Image
-                    src={d.image}
+                    src={d.images[0]}
                     alt={d.name}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
@@ -258,10 +260,10 @@ export function Landing() {
                   {d.subtitle}
                 </p>
                 <p className="mt-2 text-sm text-burgundy font-medium">
-                  {d.price}
+                  {formatPrice(d.price)}
                 </p>
                 <Link
-                  href={`/customize?design=${encodeURIComponent(d.id)}`}
+                  href={`/customize?design=${encodeURIComponent(d.slug)}`}
                   className="mt-3 inline-flex items-center justify-center rounded-full bg-burgundy px-5 py-2 text-[10px] uppercase tracking-[0.2em] font-semibold text-ivory transition-colors hover:bg-burgundy-deep whitespace-nowrap"
                 >
                   Buy Now
