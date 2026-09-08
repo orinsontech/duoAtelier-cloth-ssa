@@ -1,8 +1,18 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { CloudinaryUploadError, signedCloudinaryUpload } from '@/lib/cloudinary-server';
+import { ADMIN_SESSION_COOKIE, isSessionTokenValid } from '@/lib/admin-auth';
 
-// Auth is enforced in src/proxy.ts for every /api/admin/* route.
+// This route intentionally bypasses proxy.ts (see src/proxy.ts) — its automatic
+// request-body buffering corrupts large multipart file uploads — so auth is
+// checked here directly instead.
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
+  if (!isSessionTokenValid(token)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get('file');

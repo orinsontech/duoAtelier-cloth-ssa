@@ -38,9 +38,14 @@ export function ProductForm({
           method: 'POST',
           body: form,
         });
-        const data = (await res.json()) as { secure_url?: string; error?: string };
-        if (!res.ok || !data.secure_url) {
-          throw new Error(data.error ?? 'Upload failed');
+        const isJson = res.headers.get('content-type')?.includes('application/json');
+        const data = isJson
+          ? ((await res.json()) as { secure_url?: string; error?: string })
+          : null;
+        if (!res.ok || !data?.secure_url) {
+          throw new Error(
+            data?.error ?? `Upload failed (${res.status}) — please try a smaller image.`,
+          );
         }
         setImages((prev) => [...prev, data.secure_url as string]);
       }

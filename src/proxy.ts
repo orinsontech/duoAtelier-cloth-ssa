@@ -2,22 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { ADMIN_SESSION_COOKIE, isSessionTokenValid } from '@/lib/admin-auth';
 
+// Only /admin/* pages go through proxy. API routes under /api/admin/* (e.g. the
+// image upload endpoint) check the session cookie themselves instead — Next.js
+// buffers/clones the entire request body for any route proxy matches, which
+// corrupts large multipart file uploads, so those routes must bypass proxy.
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isProtected =
-    (pathname.startsWith('/admin') && pathname !== '/admin/login') ||
-    pathname.startsWith('/api/admin');
-
-  if (!isProtected) {
+  if (pathname === '/admin/login') {
     return NextResponse.next();
   }
 
   const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
   if (!isSessionTokenValid(token)) {
-    if (pathname.startsWith('/api/admin')) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
@@ -25,5 +22,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: '/admin/:path*',
 };
